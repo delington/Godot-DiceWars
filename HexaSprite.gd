@@ -2,6 +2,7 @@ extends Sprite
 
 var color = Global.player_color
 var selected = false
+var coordinate
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

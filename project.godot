@@ -8,19 +8,10 @@
 
 config_version=4
 
-_global_script_classes=[ {
-"base": "",
-"class": "GitAPI",
-"language": "NativeScript",
-"path": "res://addons/godot-git-plugin/git_api.gdns"
-} ]
-_global_script_class_icons={
-"GitAPI": ""
-}
-
 [application]
 
 config/name="DiceWars"
+run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -39,11 +30,11 @@ window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/github-integration/plugin.cfg" )
+enabled=PoolStringArray(  )
 
 [gdnative]
 
-singletons=[ "res://addons/godot-git-plugin/git_api.gdnlib" ]
+singletons=[  ]
 
 [physics]
 

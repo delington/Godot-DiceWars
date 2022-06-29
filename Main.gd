@@ -1,11 +1,11 @@
 extends Node2D
 
-const HEXAGON_SCENE = "res://HexaSprite.tscn"
-const ROW_COUNT = 5
+const HEXAGON_SCENE_PATH = "res://HexaSprite.tscn"
+const ROW_COUNT = 10
 const COLUMN_COUNT = 10
-const OFFSET_X = 88
-const OFFSET_Y = 73
 const ROW_OFFSET = 44
+const OFFSET = Vector2(88, 73)
+const START_HEXA_COORD = Vector2(50, 50)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -22,35 +22,42 @@ func _ready():
 #	pass
 
 func create_GameField():
-	var scene = preload(HEXAGON_SCENE)
+	var scene = preload(HEXAGON_SCENE_PATH)
 	
 	#var instance = hexagon.duplicate()
 	#add_child(instance)
 	#instance.position.x = 120
-	var position_x = 50
-	var position_y = 50
 	
 	var offset_x = 0
 	var offset_y = 0
 	
-	for i in range(ROW_COUNT):
-		var new_y = position_y + offset_y
+	for i in range(0, ROW_COUNT - 1):
+		var new_y = START_HEXA_COORD.y + offset_y
+		
 		if i % 2 == 1:
 			offset_x = 0
 		else:
 			offset_x = ROW_OFFSET
 		
-		for j in range(COLUMN_COUNT):
-			var new_x = position_x + offset_x
-			place_hexagon_tile(scene, new_x, new_y)
-			offset_x += OFFSET_X
+		for j in range(0, COLUMN_COUNT - 1):
+			var new_x = START_HEXA_COORD.x + offset_x
 			
-		offset_y += OFFSET_Y
-	
-	 #print(str("WIDTH ---> ", instance.get_rect()))
+			var instance = create_instance(scene)
+			place_hexagon_tile(scene, instance, new_x, new_y)
+			set_instance_coordinates(instance, i, j)
+			offset_x += OFFSET.x
+			
+		offset_y += OFFSET.y
 
-func place_hexagon_tile(scene, x, y):
-	var instance = scene.instance()
-	add_child(instance)
+func place_hexagon_tile(scene, instance, x, y):
 	instance.position.x = x
 	instance.position.y = y
+	return instance
+	
+func create_instance(scene):
+	var instance = scene.instance()
+	add_child(instance)
+	return instance
+	
+func set_instance_coordinates(instance, i, j):
+	instance.coordinate = Vector2(i, j)
