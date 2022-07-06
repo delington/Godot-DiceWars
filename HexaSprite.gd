@@ -1,9 +1,11 @@
 extends Sprite
 
 var color = Color.blue
+var text = ""
 var selected = false
 var dice_number = 0
 var coordinate = Vector2()
+onready var label_node = $"Label"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -17,7 +19,12 @@ func _process(delta):
 	#self.modulate = color
 	pass
 
+func set_text(new_text):
+	self.text = new_text
+	label_node.text = new_text
+
 func set_color(new_color):
+	self.color = new_color
 	self.modulate = new_color
 	
 func _on_AreaHexa_input_event(viewport, event, shape_idx):

@@ -42,11 +42,12 @@ func divide_fields():
 			
 func set_field_dices(field, player_dice_number):
 	var random_dice_number = get_random_integer(1, MAX_FIELD_DICE_NUMBER)
+	field.set_text(String(random_dice_number))
 	field.dice_number = player_dice_number - random_dice_number
 			
 func set_player_color(field, random_player_index):
 	field.set_color(Global.player_colors[random_player_index])
-			
+
 func get_random_integer(low_range, upper_range):
 	var generator = RandomNumberGenerator.new()
 	generator.randomize()
