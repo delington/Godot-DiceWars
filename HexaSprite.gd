@@ -1,6 +1,6 @@
 extends Sprite
 
-var color = Color.blue
+var color = null
 var text = ""
 var selected = false
 var dice_number = 0
@@ -32,9 +32,8 @@ func _on_AreaHexa_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
 		if selected:
 			selected = false
-			#self.color = Global.player_colors
 			set_color(color)
 		else: 
 			selected = true
-			#self.color = Global.selection_color
-			set_color(Global.selection_color)
+			self.modulate = Global.selection_color
+			self.modulate.a = 5

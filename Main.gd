@@ -8,8 +8,10 @@ const OFFSET = Vector2(88, 73)
 const START_HEXA_COORD = Vector2(50, 50)
 const NUMBER_OF_FIELDS = COLUMN_COUNT * ROW_COUNT
 const NUMBER_OF_PLAYERS = 2
-const NUMBER_OF_DICES = NUMBER_OF_FIELDS * 3
+const NUMBER_OF_DICES = (NUMBER_OF_FIELDS / 2) * 3
 const MAX_FIELD_DICE_NUMBER = 8
+const FIRST_PLAYER_INDEX = 0
+const SECOND_PLAYER_INDEX = 0
 
 var field_array = []
 
@@ -29,12 +31,14 @@ func divide_fields():
 	var player_dice_array = [NUMBER_OF_DICES, NUMBER_OF_DICES]
 	
 	for field in field_array:
-		if player_dice_array[0] == 0:
-			field.set_color(Global.player_colors[1])
-			set_field_dices(field, player_dice_array[1])
-		elif player_dice_array[1] == 0:
-			field.set_color(Global.player_colors[0])
-			set_field_dices(field, player_dice_array[0])
+		if player_dice_array[FIRST_PLAYER_INDEX] == 0:
+			field.set_color(Global.player_colors[SECOND_PLAYER_INDEX])
+			set_field_dices(field, player_dice_array[SECOND_PLAYER_INDEX])
+			
+		elif player_dice_array[SECOND_PLAYER_INDEX] == 0:
+			field.set_color(Global.player_colors[FIRST_PLAYER_INDEX])
+			set_field_dices(field, player_dice_array[FIRST_PLAYER_INDEX])
+			
 		else:
 			var random_player_index = get_random_integer(0,1)
 			set_player_color(field, random_player_index)
@@ -57,7 +61,7 @@ func create_GameField():
 	var scene = preload(HEXAGON_SCENE_PATH)
 	var aggregated_offset = Vector2(0, 0)
 	
-	for i in range(0, ROW_COUNT - 1):
+	for i in range(0, ROW_COUNT):
 		var new_y = START_HEXA_COORD.y + aggregated_offset.y
 		
 		if i % 2 == 1:
@@ -65,7 +69,7 @@ func create_GameField():
 		else:
 			aggregated_offset.x = ROW_OFFSET
 		
-		for j in range(0, COLUMN_COUNT - 1):
+		for j in range(0, COLUMN_COUNT):
 			var new_x = START_HEXA_COORD.x + aggregated_offset.x
 			
 			var instance = create_instance(scene)
