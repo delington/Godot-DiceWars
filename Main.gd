@@ -49,14 +49,20 @@ func set_dices_of_fields(field_array):
 	var player_dice_array = [NUMBER_OF_DICES, NUMBER_OF_DICES]
 	
 	while(!is_empty(player_dice_array)):
-		for i in range(0, ROW_COUNT):
-			for j in range(0, COLUMN_COUNT):
-				if field_array[i][j].dice_number < 8:
-					if field_array[i][j].color == Global.player_colors[FIRST_PLAYER_INDEX]:
-						set_field_dice_if_valid(field_array[i][j], player_dice_array, FIRST_PLAYER_INDEX)
-					
-					elif field_array[i][j].color == Global.player_colors[SECOND_PLAYER_INDEX]:
-						set_field_dice_if_valid(field_array[i][j], player_dice_array, SECOND_PLAYER_INDEX)
+		#for i in range(0, ROW_COUNT):
+			#for j in range(0, COLUMN_COUNT):
+		var random_row = get_random_integer(0, ROW_COUNT - 1)
+		var random_column = get_random_integer(0, COLUMN_COUNT - 1)
+		
+		var field = field_array[random_row][random_column]
+		if field.dice_number < 8 && field.select_chance != 1 && field.select_chance != 2:	#give more equal distribution of dice values
+			if field.color == Global.player_colors[FIRST_PLAYER_INDEX]:
+				set_field_dice_if_valid(field, player_dice_array, FIRST_PLAYER_INDEX)
+			
+			elif field.color == Global.player_colors[SECOND_PLAYER_INDEX]:
+				set_field_dice_if_valid(field, player_dice_array, SECOND_PLAYER_INDEX)
+				
+			field.select_chance += 1
 
 func set_all_fields_to_have_one_dice(fields):
 	for i in range(0, ROW_COUNT):
@@ -64,7 +70,7 @@ func set_all_fields_to_have_one_dice(fields):
 			set_field_dices(fields[i][j], 1)
 
 func set_field_dice_if_valid(field, player_dice_array: Array, player_index):
-	var random_dice_number = get_random_integer(1, MAX_FIELD_DICE_NUMBER)
+	var random_dice_number = get_random_integer(1, MAX_FIELD_DICE_NUMBER - 1)	#because earlier we set all fields at least to value 1
 	var updated_field_dice_number = field.dice_number + random_dice_number
 	var updated_player_dice_number = player_dice_array[player_index] - random_dice_number
 	

@@ -6,6 +6,7 @@ var selected = false
 var dice_number = 0
 var coordinate = Vector2()
 onready var label_node = $"Label"
+var select_chance = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
