@@ -1,6 +1,6 @@
 extends Sprite
 
-var color = null
+var color: Color
 var text = ""
 var selected = false
 var dice_number = 0
