@@ -9,7 +9,7 @@ const START_HEXA_COORD = Vector2(50, 50)
 const NUMBER_OF_FIELDS = COLUMN_COUNT * ROW_COUNT
 const NUMBER_OF_PLAYERS = 2
 const ONE_PLAYER_ALL_FIELDS = NUMBER_OF_FIELDS / 2
-const NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 3
+const NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 2
 const MAX_FIELD_DICE_NUMBER = 8
 const FIRST_PLAYER_INDEX = 0
 const SECOND_PLAYER_INDEX = 1
@@ -30,31 +30,39 @@ func _ready():
 func set_color_of_fields(field_array):
 	var field_number_array = [ONE_PLAYER_ALL_FIELDS, ONE_PLAYER_ALL_FIELDS]
 	
-	for field in field_array:
-		var random_player_index = get_random_integer(0,1)
-		if (field_number_array[random_player_index] > 0):
-			field.set_color(Global.player_colors[random_player_index])
-			field_number_array[random_player_index] -= 1
-		else: 
-			var opponent_player_index: int = get_opponent_index(random_player_index)
-			field.set_color(Global.player_colors[opponent_player_index])
-			field_number_array[opponent_player_index] -= 1
+	for i in range(0, ROW_COUNT):
+		for j in range(0, COLUMN_COUNT):
+			var random_player_index = get_random_integer(0,1)
+			if (field_number_array[random_player_index] > 0):
+				field_array[i][j].set_color(Global.player_colors[random_player_index])
+				field_number_array[random_player_index] -= 1
+			else: 
+				var opponent_player_index: int = get_opponent_index(random_player_index)
+				field_array[i][j].set_color(Global.player_colors[opponent_player_index])
+				field_number_array[opponent_player_index] -= 1
 
 func get_opponent_index(random_player_index: int):
 	return random_player_index == 0 if 1 else 0
 
 func set_dices_of_fields(field_array):
+	set_all_fields_to_have_one_dice(field_array)
 	var player_dice_array = [NUMBER_OF_DICES, NUMBER_OF_DICES]
 	
 	while(!is_empty(player_dice_array)):
-		for field in field_array:
-			if field.dice_number < 8:
-				if field.color == Global.player_colors[FIRST_PLAYER_INDEX]:
-					set_field_dice_if_valid(field, player_dice_array, FIRST_PLAYER_INDEX)
-				
-				elif field.color == Global.player_colors[SECOND_PLAYER_INDEX]:
-					set_field_dice_if_valid(field, player_dice_array, SECOND_PLAYER_INDEX)
-	
+		for i in range(0, ROW_COUNT):
+			for j in range(0, COLUMN_COUNT):
+				if field_array[i][j].dice_number < 8:
+					if field_array[i][j].color == Global.player_colors[FIRST_PLAYER_INDEX]:
+						set_field_dice_if_valid(field_array[i][j], player_dice_array, FIRST_PLAYER_INDEX)
+					
+					elif field_array[i][j].color == Global.player_colors[SECOND_PLAYER_INDEX]:
+						set_field_dice_if_valid(field_array[i][j], player_dice_array, SECOND_PLAYER_INDEX)
+
+func set_all_fields_to_have_one_dice(fields):
+	for i in range(0, ROW_COUNT):
+		for j in range(0, COLUMN_COUNT):
+			set_field_dices(fields[i][j], 1)
+
 func set_field_dice_if_valid(field, player_dice_array: Array, player_index):
 	var random_dice_number = get_random_integer(1, MAX_FIELD_DICE_NUMBER)
 	var updated_field_dice_number = field.dice_number + random_dice_number
@@ -85,6 +93,8 @@ func create_game_field():
 	var field_array = []
 	
 	for i in range(0, ROW_COUNT):
+		field_array.append([])
+		field_array[i] = []
 		var new_y = START_HEXA_COORD.y + aggregated_offset.y
 		
 		if i % 2 == 1:
@@ -93,9 +103,11 @@ func create_game_field():
 			aggregated_offset.x = ROW_OFFSET
 		
 		for j in range(0, COLUMN_COUNT):
+			field_array[i].append([])
 			var new_x = START_HEXA_COORD.x + aggregated_offset.x
 			
-			var instance = create_instance(scene, field_array)
+			var instance = create_instance(scene)
+			field_array[i][j] = instance
 			place_hexagon_tile(scene, instance, new_x, new_y)
 			set_instance_coordinates(instance, i, j)
 			aggregated_offset.x += OFFSET.x
@@ -109,11 +121,9 @@ func place_hexagon_tile(scene, instance, x, y):
 	instance.position.y = y
 	return instance
 	
-func create_instance(scene, field_array):
+func create_instance(scene):
 	var instance = scene.instance()
 	add_child(instance)
-	
-	field_array.append(instance)
 	
 	return instance
 	
