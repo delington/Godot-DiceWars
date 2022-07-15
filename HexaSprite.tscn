@@ -2,18 +2,16 @@
 
 [ext_resource path="res://hexa4.png" type="Texture" id=1]
 [ext_resource path="res://HexaSprite.gd" type="Script" id=2]
+[ext_resource path="res://Roboto-Black.ttf" type="DynamicFontData" id=3]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 430.116
 
-[sub_resource type="DynamicFontData" id=2]
-font_path = "res://Roboto-Black.ttf"
-
-[sub_resource type="DynamicFont" id=3]
-size = 500
+[sub_resource type="DynamicFont" id=2]
+size = 550
 outline_size = 15
 outline_color = Color( 0, 0, 0, 1 )
-font_data = SubResource( 2 )
+font_data = ExtResource( 3 )
 
 [node name="HexaSprite" type="Sprite"]
 position = Vector2( 45, 51 )
@@ -33,11 +31,11 @@ anchor_left = 0.277
 anchor_top = 0.314
 anchor_right = 0.712
 anchor_bottom = 0.666
-margin_left = -448.192
+margin_left = -438.192
 margin_top = -611.536
-margin_right = -427.952
-margin_bottom = -384.984
-custom_fonts/font = SubResource( 3 )
+margin_right = -417.952
+margin_bottom = -325.984
+custom_fonts/font = SubResource( 2 )
 text = "0"
 align = 1
 valign = 1
