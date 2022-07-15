@@ -11,11 +11,9 @@ const player_colors_dict = [
 		"value": Color.red
 	}
 ]
-const player_colors = [player_colors_dict[0]["value"], player_colors_dict[1]["value"]]
 const FIRST_PLAYER_INDEX = 0
 const SECOND_PLAYER_INDEX = 1
 const OPTION_BUTTON_PLAYER_KEY = "selected_player"
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

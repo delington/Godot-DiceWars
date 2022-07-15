@@ -14,6 +14,8 @@ const NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 2
 const MAX_FIELD_DICE_NUMBER = 8
 const FIRST_PLAYER_INDEX = 0
 const SECOND_PLAYER_INDEX = 1
+const COLOR_KEY = "value"
+const COLOR_TEXT_KEY = "text"
 
 onready var start_label = $"StartLabel"
 var parameters: Dictionary
@@ -36,7 +38,7 @@ func set_start_label():
 	var selected_player_index: int = parameters[Global.OPTION_BUTTON_PLAYER_KEY]
 	
 	if selected_player_index >= 0:
-		var selected_player_color = Global.player_colors_dict[selected_player_index]["text"]
+		var selected_player_color = Global.player_colors_dict[selected_player_index][COLOR_TEXT_KEY]
 		start_label.text = str(selected_player_color, " player starts the turn")
 	else:
 		print("ERROR: player index is out of bounds!")
@@ -48,11 +50,11 @@ func set_color_of_fields(field_array):
 		for j in range(0, COLUMN_COUNT):
 			var random_player_index = get_random_integer(0,1)
 			if (field_number_array[random_player_index] > 0):
-				field_array[i][j].set_color(Global.player_colors[random_player_index])
+				field_array[i][j].set_color(Global.player_colors_dict[random_player_index][COLOR_KEY])
 				field_number_array[random_player_index] -= 1
 			else: 
 				var opponent_player_index: int = get_opponent_index(random_player_index)
-				field_array[i][j].set_color(Global.player_colors[opponent_player_index])
+				field_array[i][j].set_color(Global.player_colors_dict[opponent_player_index][COLOR_KEY])
 				field_number_array[opponent_player_index] -= 1
 
 func get_opponent_index(random_player_index: int):
@@ -68,10 +70,10 @@ func set_dices_of_fields(field_array):
 		
 		var field = field_array[random_row][random_column]
 		if field.dice_number < 8 && field.select_chance != 1 && field.select_chance != 2:	#give more equal distribution of dice values
-			if field.color == Global.player_colors[FIRST_PLAYER_INDEX]:
+			if field.color == Global.player_colors_dict[FIRST_PLAYER_INDEX][COLOR_KEY]:
 				set_field_dice_if_valid(field, player_dice_array, FIRST_PLAYER_INDEX)
 			
-			elif field.color == Global.player_colors[SECOND_PLAYER_INDEX]:
+			elif field.color == Global.player_colors_dict[SECOND_PLAYER_INDEX][COLOR_KEY]:
 				set_field_dice_if_valid(field, player_dice_array, SECOND_PLAYER_INDEX)
 				
 			field.select_chance += 1
