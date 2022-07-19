@@ -1,5 +1,7 @@
 extends Sprite
 
+signal signal_select_field(instance)
+
 var color: Color
 var text = ""
 var selected = false
@@ -14,6 +16,7 @@ func _ready():
 	
 	var area_hexa = $"AreaHexa"
 	area_hexa.connect("input_event", self, "_on_AreaHexa_input_event")
+	self.connect("signal_select_field", Global.ref["Battlefield"], "handle_scene_change")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -31,10 +34,4 @@ func set_color(new_color):
 func _on_AreaHexa_input_event(viewport, event, shape_idx):
 	
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
-		if selected:
-			selected = false
-			set_color(color)
-		else: 
-			selected = true
-			self.modulate = Global.selection_color
-			self.modulate.a = 5
+		emit_signal("signal_select_field", self)

@@ -14,16 +14,13 @@ const NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 2
 const MAX_FIELD_DICE_NUMBER = 8
 const FIRST_PLAYER_INDEX = 0
 const SECOND_PLAYER_INDEX = 1
-const COLOR_KEY = "value"
-const COLOR_TEXT_KEY = "text"
+const TURN_LABEL = "'s turn"
 
 onready var start_label = $"StartLabel"
-var parameters: Dictionary
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	#hexagon.set_color(Global.player_color)
-	#hexagon.position.x = 100
+	Global.ref["Battlefield"] = self
 	
 	var field_array = create_game_field()
 	set_color_of_fields(field_array)
@@ -35,11 +32,11 @@ func _process(delta):
 	pass
 
 func set_start_label():
-	var selected_player_index: int = parameters[Global.OPTION_BUTTON_PLAYER_KEY]
+	var selected_player_index: int = Global.current_player_index
 	
 	if selected_player_index >= 0:
-		var selected_player_color = Global.player_colors_dict[selected_player_index][COLOR_TEXT_KEY]
-		start_label.text = str(selected_player_color, " player starts the turn")
+		var selected_player_color = Global.get_player_color_name_by_index(selected_player_index)
+		start_label.text = str(selected_player_color, TURN_LABEL)
 	else:
 		print("ERROR: player index is out of bounds!")
 
@@ -50,11 +47,11 @@ func set_color_of_fields(field_array):
 		for j in range(0, COLUMN_COUNT):
 			var random_player_index = get_random_integer(0,1)
 			if (field_number_array[random_player_index] > 0):
-				field_array[i][j].set_color(Global.player_colors_dict[random_player_index][COLOR_KEY])
+				field_array[i][j].set_color(Global.get_player_color_value_by_index(random_player_index))
 				field_number_array[random_player_index] -= 1
 			else: 
 				var opponent_player_index: int = get_opponent_index(random_player_index)
-				field_array[i][j].set_color(Global.player_colors_dict[opponent_player_index][COLOR_KEY])
+				field_array[i][j].set_color(Global.get_player_color_value_by_index(opponent_player_index))
 				field_number_array[opponent_player_index] -= 1
 
 func get_opponent_index(random_player_index: int):
@@ -70,10 +67,10 @@ func set_dices_of_fields(field_array):
 		
 		var field = field_array[random_row][random_column]
 		if field.dice_number < 8 && field.select_chance != 1 && field.select_chance != 2:	#give more equal distribution of dice values
-			if field.color == Global.player_colors_dict[FIRST_PLAYER_INDEX][COLOR_KEY]:
+			if field.color == Global.get_player_color_value_by_index(FIRST_PLAYER_INDEX) :
 				set_field_dice_if_valid(field, player_dice_array, FIRST_PLAYER_INDEX)
 			
-			elif field.color == Global.player_colors_dict[SECOND_PLAYER_INDEX][COLOR_KEY]:
+			elif field.color == Global.get_player_color_value_by_index(SECOND_PLAYER_INDEX) :
 				set_field_dice_if_valid(field, player_dice_array, SECOND_PLAYER_INDEX)
 				
 			field.select_chance += 1
@@ -149,3 +146,15 @@ func create_instance(scene):
 	
 func set_instance_coordinates(instance, i, j):
 	instance.coordinate = Vector2(i, j)
+	
+func handle_scene_change(field):
+	var selected = field.selected
+	var color = field.color
+	
+	if selected:
+		field.selected = false
+		field.set_color(color)
+	else: 
+		field.selected = true
+		field.modulate = Global.selection_color
+		field.modulate.a = 5

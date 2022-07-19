@@ -14,11 +14,7 @@ func _ready():
 func handle_scene_change():
 	first_scene.queue_free()
 	
-	var battlefield_scene = load(BATTLEFIELD_SCENE_PATH).instance()
+	var battlefield_scene = preload(BATTLEFIELD_SCENE_PATH).instance()
 	add_child(battlefield_scene)
 	
-	transfer_data_between_scenes(first_scene, battlefield_scene)
 	battlefield_scene.set_start_label()
-	
-func transfer_data_between_scenes(old_scene, new_scene):
-	new_scene.parameters = old_scene.parameters
