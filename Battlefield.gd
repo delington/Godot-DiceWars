@@ -17,6 +17,8 @@ const SECOND_PLAYER_INDEX = 1
 const TURN_LABEL = "'s turn"
 
 onready var start_label = $"StartLabel"
+onready var end_turn_button = $"EndTurnButton"
+onready var end_button_animation_sprite = $"EndTurnButton/EndTurnButtonAnimationSprite"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -54,7 +56,7 @@ func set_color_of_fields(field_array):
 				field_array[i][j].set_color(Global.get_player_color_value_by_index(opponent_player_index))
 				field_number_array[opponent_player_index] -= 1
 
-func get_opponent_index(random_player_index: int):
+func get_opponent_index(random_player_index: int) -> int:
 	return random_player_index == 0 if 1 else 0
 
 func set_dices_of_fields(field_array):
@@ -147,14 +149,31 @@ func create_instance(scene):
 func set_instance_coordinates(instance, i, j):
 	instance.coordinate = Vector2(i, j)
 	
-func handle_scene_change(field):
-	var selected = field.selected
-	var color = field.color
-	
-	if selected:
+func handle_field_selection(field):
+	var current_player_color = Global.player_colors_dict[Global.current_player_index].value
+	if (field.color == current_player_color):
+		handle_field_click(field)
+
+
+func handle_field_click(field):
+	if field.selected:
 		field.selected = false
-		field.set_color(color)
+		field.set_color(field.color)
 	else: 
 		field.selected = true
 		field.modulate = Global.selection_color
 		field.modulate.a = 5
+
+
+func _on_EndTurnButton_pressed():
+	var opponent_index: int = get_opponent_index(Global.current_player_index)
+	Global.current_player_index = opponent_index
+	
+	var opponent_color: String = Global.player_colors_dict[opponent_index].text
+	start_label.text = str(opponent_color, TURN_LABEL)
+	
+	manage_end_button_animation(end_button_animation_sprite)
+
+func manage_end_button_animation(animation_sprite):
+	animation_sprite.frame = 0
+	animation_sprite.play()

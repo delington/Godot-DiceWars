@@ -16,7 +16,7 @@ func _ready():
 	
 	var area_hexa = $"AreaHexa"
 	area_hexa.connect("input_event", self, "_on_AreaHexa_input_event")
-	self.connect("signal_select_field", Global.ref["Battlefield"], "handle_scene_change")
+	self.connect("signal_select_field", Global.ref["Battlefield"], "handle_field_selection")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
