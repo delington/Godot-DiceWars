@@ -20,6 +20,7 @@ font_data = ExtResource( 2 )
 size = 15
 outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
+use_filter = true
 font_data = ExtResource( 2 )
 
 [sub_resource type="StyleBoxFlat" id=3]
@@ -65,14 +66,14 @@ custom_fonts/font = SubResource( 4 )
 text = "Select color"
 
 [node name="Button" type="Button" parent="."]
-margin_left = 381.128
-margin_top = 403.0
-margin_right = 492.128
-margin_bottom = 428.0
+margin_left = 402.0
+margin_top = 401.0
+margin_right = 490.0
+margin_bottom = 425.0
 rect_scale = Vector2( 1.70573, 2.50441 )
 custom_fonts/font = SubResource( 2 )
 custom_styles/pressed = SubResource( 3 )
-text = "Press to start"
+text = "Start Game"
 
 [node name="OptionButton" type="OptionButton" parent="."]
 margin_left = 412.056
