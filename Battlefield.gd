@@ -19,12 +19,21 @@ const TURN_LABEL = "'s turn"
 onready var start_label = $"StartLabel"
 onready var end_turn_button = $"EndTurnButton"
 onready var end_button_animation_sprite = $"EndTurnButton/EndTurnButtonAnimationSprite"
+onready var attacker_scoring_label = $"AttackerScoring"
+onready var defender_scoring_label = $"DefenderScoring"
+onready var attacker_label = $"AttackerScoring/AttackerLabel"
+onready var defender_label = $"DefenderScoring/DefenderLabel"
+
+var attack_from
+var attack_to
+var is_set_attack_from = false
+var field_array: Array
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Global.ref["Battlefield"] = self
 	
-	var field_array = create_game_field()
+	field_array = create_game_field()
 	set_color_of_fields(field_array)
 	set_dices_of_fields(field_array)
 
@@ -106,7 +115,7 @@ func get_random_integer(low_range, upper_range):
 	generator.randomize()
 	return generator.randi_range(low_range, upper_range) 
 
-func create_game_field():
+func create_game_field() -> Array:
 	var scene = preload(HEXAGON_SCENE_PATH)
 	var aggregated_offset = Vector2(0, 0)
 	var field_array = []
@@ -149,20 +158,45 @@ func create_instance(scene):
 func set_instance_coordinates(instance, i, j):
 	instance.coordinate = Vector2(i, j)
 	
-func handle_field_selection(field):
-	var current_player_color = Global.player_colors_dict[Global.current_player_index].value
-	if (field.color == current_player_color):
-		handle_field_click(field)
+func handle_battle(field):
+	var current_player_color: Color = Global.player_colors_dict[Global.current_player_index].value
+	var opponent_index: int = get_opponent_index(Global.current_player_index)
+	var opponent_player_color: Color = Global.player_colors_dict[opponent_index].value
+	
+	if (field.color == current_player_color && !is_set_attack_from && field.dice_number > 1):
+		handle_attributes_change_of_field(field)
+		attack_from = get_field_from_array(field.coordinate)
+		is_set_attack_from = true
+		
+	elif (field.color == opponent_player_color):
+		get_winner(attack_from, field, Global.current_player_index)
+		is_set_attack_from = false
+		
+func get_winner(attacker, defender, attacker_player_index: int) -> int:
+	var attacker_score = get_dice_score(attacker.dice_number)
+	attacker_scoring_label.text = attacker_score as String
+	attacker_label.modulate = Global.player_colors_dict[attacker_player_index].value
+	
+	var defender_score = get_dice_score(defender.dice_number)
+	defender_scoring_label.text = defender_score as String
+	defender_label.modulate = Global.player_colors_dict[get_opponent_index(attacker_player_index) as int].value
+	
+	if (attacker_score > defender_score):
+		return attacker_player_index
+	
+	return get_opponent_index(attacker_player_index)
+	
+func get_dice_score(dice_number) -> int:
+	return get_random_integer(dice_number, dice_number * 8)
 
+func get_field_from_array(coordinate: Vector2):
+	return field_array[coordinate.x][coordinate.y]
 
-func handle_field_click(field):
+func handle_attributes_change_of_field(field):
 	if field.selected:
-		field.selected = false
-		field.set_color(field.color)
+		field.set_unselected()
 	else: 
-		field.selected = true
-		field.modulate = Global.selection_color
-		field.modulate.a = 5
+		field.set_selected()
 
 
 func _on_EndTurnButton_pressed():

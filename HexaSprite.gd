@@ -16,7 +16,7 @@ func _ready():
 	
 	var area_hexa = $"AreaHexa"
 	area_hexa.connect("input_event", self, "_on_AreaHexa_input_event")
-	self.connect("signal_select_field", Global.ref["Battlefield"], "handle_field_selection")
+	self.connect("signal_select_field", Global.ref["Battlefield"], "handle_battle")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -30,6 +30,15 @@ func set_text(new_text):
 func set_color(new_color):
 	self.color = new_color
 	self.modulate = new_color
+	
+func set_unselected():
+	self.selected = false
+	self.set_color(self.color)
+	
+func set_selected():
+	self.selected = true
+	self.modulate = Global.selection_color
+	self.modulate.a = 5
 	
 func _on_AreaHexa_input_event(viewport, event, shape_idx):
 	

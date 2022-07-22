@@ -73,36 +73,38 @@ frames = SubResource( 3 )
 frame = 4
 offset = Vector2( 1.646, -5.81335 )
 
-[node name="AttackerPoint" type="Label" parent="."]
+[node name="AttackerScoring" type="Label" parent="."]
 margin_left = 1320.0
 margin_top = 430.0
 margin_right = 1497.0
 margin_bottom = 550.0
 custom_fonts/font = SubResource( 5 )
-text = "223"
+text = "0"
+align = 1
 
-[node name="AttackerLabel" type="Label" parent="AttackerPoint"]
-margin_left = -3.0
+[node name="AttackerLabel" type="Label" parent="AttackerScoring"]
+margin_left = 5.0
 margin_top = 132.0
-margin_right = 188.0
+margin_right = 196.0
 margin_bottom = 196.0
 custom_fonts/font = SubResource( 4 )
 text = "Attacker "
 
-[node name="Sprite" type="Sprite" parent="AttackerPoint/AttackerLabel"]
-position = Vector2( 85, 97 )
+[node name="Sprite" type="Sprite" parent="AttackerScoring"]
+position = Vector2( 90, 227 )
 scale = Vector2( 0.120117, 0.128906 )
 texture = ExtResource( 7 )
 
-[node name="DefenderPoint" type="Label" parent="."]
+[node name="DefenderScoring" type="Label" parent="."]
 margin_left = 1599.0
 margin_top = 430.0
 margin_right = 1776.0
 margin_bottom = 575.0
 custom_fonts/font = SubResource( 6 )
-text = "223"
+text = "0"
+align = 1
 
-[node name="DefenderLabel" type="Label" parent="DefenderPoint"]
+[node name="DefenderLabel" type="Label" parent="DefenderScoring"]
 margin_left = -2.0
 margin_top = 135.0
 margin_right = 185.0
@@ -110,8 +112,8 @@ margin_bottom = 190.0
 custom_fonts/font = SubResource( 1 )
 text = "Defender"
 
-[node name="Sprite" type="Sprite" parent="DefenderPoint/DefenderLabel"]
-position = Vector2( 94, 95 )
+[node name="Sprite" type="Sprite" parent="DefenderScoring"]
+position = Vector2( 92, 230 )
 scale = Vector2( 0.252778, 0.238889 )
 texture = ExtResource( 8 )
 
