@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Roboto-Black.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Battlefield.gd" type="Script" id=2]
@@ -32,19 +32,97 @@ font_data = ExtResource( 1 )
 size = 45
 font_data = ExtResource( 1 )
 
+[sub_resource type="Animation" id=7]
+resource_name = "turn_attacker"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = false
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 88, 237 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5, 1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 180.0, 360.0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0.138184, 0.142578 ), Vector2( 0.15, 0.148 ) ]
+}
+
 [sub_resource type="DynamicFont" id=6]
 size = 102
 font_data = ExtResource( 1 )
+
+[sub_resource type="Animation" id=8]
+resource_name = "turn_defender"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = false
+tracks/0/keys = {
+"times": PoolRealArray( 1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 89, 237 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 360.0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.5, 1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0.291314, 0.271289 ), Vector2( 0.32, 0.282 ), Vector2( 0.291314, 0.271289 ) ]
+}
 
 [node name="Battlefield" type="Node2D"]
 position = Vector2( 0, 3 )
 script = ExtResource( 2 )
 
 [node name="StartLabel" type="Label" parent="."]
-margin_left = 1610.0
-margin_top = 18.0
-margin_right = 1904.0
-margin_bottom = 76.0
+margin_left = 1362.0
+margin_top = 880.0
+margin_right = 1656.0
+margin_bottom = 938.0
 custom_fonts/font = SubResource( 1 )
 text = "starts the turn"
 
@@ -74,10 +152,10 @@ frame = 4
 offset = Vector2( 1.646, -5.81335 )
 
 [node name="AttackerScoring" type="Label" parent="."]
-margin_left = 1320.0
-margin_top = 430.0
-margin_right = 1497.0
-margin_bottom = 550.0
+margin_left = 1416.0
+margin_top = 432.0
+margin_right = 1593.0
+margin_bottom = 552.0
 custom_fonts/font = SubResource( 5 )
 text = "0"
 align = 1
@@ -90,16 +168,19 @@ margin_bottom = 196.0
 custom_fonts/font = SubResource( 4 )
 text = "Attacker "
 
-[node name="Sprite" type="Sprite" parent="AttackerScoring"]
-position = Vector2( 90, 227 )
-scale = Vector2( 0.120117, 0.128906 )
+[node name="AttackerSprite" type="Sprite" parent="AttackerScoring"]
+position = Vector2( 88, 237 )
+scale = Vector2( 0.138184, 0.142578 )
 texture = ExtResource( 7 )
 
+[node name="WinnerAnimation" type="AnimationPlayer" parent="AttackerScoring/AttackerSprite"]
+anims/turn_attacker = SubResource( 7 )
+
 [node name="DefenderScoring" type="Label" parent="."]
-margin_left = 1599.0
-margin_top = 430.0
-margin_right = 1776.0
-margin_bottom = 575.0
+margin_left = 1695.0
+margin_top = 432.0
+margin_right = 1872.0
+margin_bottom = 577.0
 custom_fonts/font = SubResource( 6 )
 text = "0"
 align = 1
@@ -112,9 +193,12 @@ margin_bottom = 190.0
 custom_fonts/font = SubResource( 1 )
 text = "Defender"
 
-[node name="Sprite" type="Sprite" parent="DefenderScoring"]
-position = Vector2( 92, 230 )
-scale = Vector2( 0.252778, 0.238889 )
+[node name="DefenderSprite" type="Sprite" parent="DefenderScoring"]
+position = Vector2( 89, 237 )
+scale = Vector2( 0.291314, 0.271289 )
 texture = ExtResource( 8 )
+
+[node name="WinnerAnimation" type="AnimationPlayer" parent="DefenderScoring/DefenderSprite"]
+anims/turn_defender = SubResource( 8 )
 
 [connection signal="pressed" from="EndTurnButton" to="." method="_on_EndTurnButton_pressed"]

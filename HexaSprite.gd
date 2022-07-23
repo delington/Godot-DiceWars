@@ -3,7 +3,7 @@ extends Sprite
 signal signal_select_field(instance)
 
 var color: Color
-var text = ""
+var text: String = ""
 var selected = false
 var dice_number = 0
 var coordinate = Vector2()
@@ -23,13 +23,17 @@ func _process(delta):
 	#self.modulate = color
 	pass
 
-func set_text(new_text):
+func set_text(new_text: String):
 	self.text = new_text
 	label_node.text = new_text
 
-func set_color(new_color):
+func set_color(new_color: Color):
 	self.color = new_color
 	self.modulate = new_color
+	
+func set_dice_number(new_dice_number):
+	self.dice_number = new_dice_number
+	set_text(new_dice_number as String)
 	
 func set_unselected():
 	self.selected = false

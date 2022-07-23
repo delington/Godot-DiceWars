@@ -23,6 +23,8 @@ onready var attacker_scoring_label = $"AttackerScoring"
 onready var defender_scoring_label = $"DefenderScoring"
 onready var attacker_label = $"AttackerScoring/AttackerLabel"
 onready var defender_label = $"DefenderScoring/DefenderLabel"
+onready var attacker_animation = $"AttackerScoring/AttackerSprite/WinnerAnimation"
+onready var defender_animation = $"DefenderScoring/DefenderSprite/WinnerAnimation"
 
 var attack_from
 var attack_to
@@ -164,13 +166,20 @@ func handle_battle(field):
 	var opponent_player_color: Color = Global.player_colors_dict[opponent_index].value
 	
 	if (field.color == current_player_color && !is_set_attack_from && field.dice_number > 1):
-		handle_attributes_change_of_field(field)
+		#handle_selection(field)
+		field.set_selected()
 		attack_from = get_field_from_array(field.coordinate)
 		is_set_attack_from = true
 		
-	elif (field.color == opponent_player_color):
-		get_winner(attack_from, field, Global.current_player_index)
+	elif (field.color == current_player_color && is_set_attack_from && attack_from != null && field.coordinate == attack_from.coordinate):
+		field.set_unselected()
 		is_set_attack_from = false
+		
+	elif (field.color == opponent_player_color && is_set_attack_from):
+		var winner_player_index = get_winner(attack_from, field, Global.current_player_index)
+		
+		is_set_attack_from = false
+		attack_from.set_unselected()
 		
 func get_winner(attacker, defender, attacker_player_index: int) -> int:
 	var attacker_score = get_dice_score(attacker.dice_number)
@@ -182,9 +191,20 @@ func get_winner(attacker, defender, attacker_player_index: int) -> int:
 	defender_label.modulate = Global.player_colors_dict[get_opponent_index(attacker_player_index) as int].value
 	
 	if (attacker_score > defender_score):
+		attacker_animation.play("turn_attacker")
+		attach_defender_field_to_attacker(attacker, defender)
+		attacker.set_dice_number(1)    #move dices to defender's field
+		
 		return attacker_player_index
 	
+	defender_animation.play("turn_defender")
+	attacker.set_dice_number(1)   #attacker lose dices except one
 	return get_opponent_index(attacker_player_index)
+	
+func attach_defender_field_to_attacker(attacker_field, defender_field):
+	var new_dice_number = attacker_field.dice_number - 1
+	defender_field.set_dice_number(new_dice_number)
+	defender_field.set_color(attacker_field.color)
 	
 func get_dice_score(dice_number) -> int:
 	return get_random_integer(dice_number, dice_number * 8)
@@ -192,7 +212,7 @@ func get_dice_score(dice_number) -> int:
 func get_field_from_array(coordinate: Vector2):
 	return field_array[coordinate.x][coordinate.y]
 
-func handle_attributes_change_of_field(field):
+func handle_selection(field):
 	if field.selected:
 		field.set_unselected()
 	else: 
