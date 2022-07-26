@@ -175,28 +175,28 @@ position = Vector2( 0, 3 )
 script = ExtResource( 2 )
 
 [node name="StartLabel" type="Label" parent="."]
-margin_left = 1362.0
-margin_top = 880.0
-margin_right = 1656.0
-margin_bottom = 938.0
+margin_left = 1328.0
+margin_top = 784.0
+margin_right = 1622.0
+margin_bottom = 842.0
 rect_pivot_offset = Vector2( -25, 81 )
 custom_fonts/font = SubResource( 1 )
 text = "starts the turn"
 script = ExtResource( 4 )
 
 [node name="EndTurnLabel" type="Label" parent="."]
-margin_left = 1708.0
-margin_top = 994.0
-margin_right = 1884.0
-margin_bottom = 1049.0
+margin_left = 1674.0
+margin_top = 898.0
+margin_right = 1850.0
+margin_bottom = 953.0
 custom_fonts/font = SubResource( 1 )
 text = "End turn"
 
 [node name="EndTurnButton" type="Button" parent="."]
-margin_left = 1648.0
-margin_top = 683.011
-margin_right = 1934.0
-margin_bottom = 1114.01
+margin_left = 1614.0
+margin_top = 587.011
+margin_right = 1900.0
+margin_bottom = 1018.01
 rect_scale = Vector2( 0.428949, 0.392132 )
 rect_pivot_offset = Vector2( 146.064, 220.424 )
 custom_fonts/font = SubResource( 2 )
@@ -214,10 +214,10 @@ anims/RESET = SubResource( 10 )
 anims/default = SubResource( 9 )
 
 [node name="AttackerScoring" type="Label" parent="."]
-margin_left = 1416.0
-margin_top = 432.0
-margin_right = 1593.0
-margin_bottom = 552.0
+margin_left = 1382.0
+margin_top = 336.0
+margin_right = 1559.0
+margin_bottom = 456.0
 custom_fonts/font = SubResource( 5 )
 text = "0"
 align = 1
@@ -239,10 +239,10 @@ texture = ExtResource( 7 )
 anims/turn_attacker = SubResource( 7 )
 
 [node name="DefenderScoring" type="Label" parent="."]
-margin_left = 1695.0
-margin_top = 432.0
-margin_right = 1872.0
-margin_bottom = 577.0
+margin_left = 1661.0
+margin_top = 336.0
+margin_right = 1838.0
+margin_bottom = 481.0
 custom_fonts/font = SubResource( 6 )
 text = "0"
 align = 1
