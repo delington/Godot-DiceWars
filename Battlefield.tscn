@@ -1,11 +1,9 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Roboto-Black.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Battlefield.gd" type="Script" id=2]
 [ext_resource path="res://img/hourglass.png" type="Texture" id=3]
-[ext_resource path="res://img/hourglass45.png" type="Texture" id=4]
-[ext_resource path="res://img/hourglass90.png" type="Texture" id=5]
-[ext_resource path="res://img/hourglass135.png" type="Texture" id=6]
+[ext_resource path="res://StartLabel.gd" type="Script" id=4]
 [ext_resource path="res://img/sword.png" type="Texture" id=7]
 [ext_resource path="res://img/shield.png" type="Texture" id=8]
 
@@ -16,13 +14,71 @@ font_data = ExtResource( 1 )
 [sub_resource type="DynamicFont" id=2]
 font_data = ExtResource( 1 )
 
-[sub_resource type="SpriteFrames" id=3]
-animations = [ {
-"frames": [ ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 3 ) ],
-"loop": false,
-"name": "default",
-"speed": 5.0
-} ]
+[sub_resource type="Animation" id=10]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0.643252, 0.782391 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 127.264, 184.163 ) ]
+}
+
+[sub_resource type="Animation" id=9]
+resource_name = "default"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = false
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 127.264, 193.813 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 180.0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = false
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0.643252, 0.747679 ) ]
+}
 
 [sub_resource type="DynamicFont" id=5]
 size = 102
@@ -123,8 +179,10 @@ margin_left = 1362.0
 margin_top = 880.0
 margin_right = 1656.0
 margin_bottom = 938.0
+rect_pivot_offset = Vector2( -25, 81 )
 custom_fonts/font = SubResource( 1 )
 text = "starts the turn"
+script = ExtResource( 4 )
 
 [node name="EndTurnLabel" type="Label" parent="."]
 margin_left = 1708.0
@@ -144,12 +202,16 @@ rect_pivot_offset = Vector2( 146.064, 220.424 )
 custom_fonts/font = SubResource( 2 )
 flat = true
 
-[node name="EndTurnButtonAnimationSprite" type="AnimatedSprite" parent="EndTurnButton"]
-position = Vector2( 141.251, 216.792 )
-scale = Vector2( 0.710678, 0.795987 )
-frames = SubResource( 3 )
-frame = 4
-offset = Vector2( 1.646, -5.81335 )
+[node name="Sprite" type="Sprite" parent="EndTurnButton"]
+position = Vector2( 127.264, 184.163 )
+rotation = 3.14159
+scale = Vector2( 0.643252, 0.782391 )
+texture = ExtResource( 3 )
+offset = Vector2( 0, -4.08936 )
+
+[node name="TurnAnimation" type="AnimationPlayer" parent="EndTurnButton/Sprite"]
+anims/RESET = SubResource( 10 )
+anims/default = SubResource( 9 )
 
 [node name="AttackerScoring" type="Label" parent="."]
 margin_left = 1416.0

@@ -27,6 +27,7 @@ onready var attacker_label = $"AttackerScoring/AttackerLabel"
 onready var defender_label = $"DefenderScoring/DefenderLabel"
 onready var attacker_animation = $"AttackerScoring/AttackerSprite/WinnerAnimation"
 onready var defender_animation = $"DefenderScoring/DefenderSprite/WinnerAnimation"
+onready var turn_animation = $"EndTurnButton/Sprite/TurnAnimation"
 
 var attack_from
 var is_set_attack_from = false   # for player can only select 1 field to attack from
@@ -49,8 +50,7 @@ func set_start_label():
 	var selected_player_index: int = Global.current_player_index
 	
 	if selected_player_index >= 0:
-		var selected_player_color = Global.get_player_color_name_by_index(selected_player_index)
-		start_label.text = str(selected_player_color, TURN_LABEL)
+		start_label.set_text_and_color(selected_player_index)
 	else:
 		print("ERROR: player index is out of bounds!")
 
@@ -239,11 +239,10 @@ func _on_EndTurnButton_pressed():
 	var opponent_index: int = get_opponent_index(Global.current_player_index)
 	Global.current_player_index = opponent_index
 	
-	var opponent_color: String = Global.player_colors_dict[opponent_index].text
-	start_label.text = str(opponent_color, TURN_LABEL)
+	start_label.set_text_and_color(opponent_index)
 	
-	manage_end_button_animation(end_button_animation_sprite)
+	manage_end_button_animation(turn_animation)
 
-func manage_end_button_animation(animation_sprite):
-	animation_sprite.frame = 0
-	animation_sprite.play()
+func manage_end_button_animation(animation):
+	turn_animation.stop()
+	turn_animation.play("default")
