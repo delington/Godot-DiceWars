@@ -223,7 +223,7 @@ func get_field_from_array(coordinate: Vector2):
 	return field_array[coordinate.x][coordinate.y]
 
 func is_neighbour(attacker_coord: Vector2, defender_coord: Vector2):
-	var delta = difference_of_vectors(attacker_coord, defender_coord)
+	var delta = defender_coord - attacker_coord
 	if (FIRST_LINE_OFFSET):
 		if (attacker_coord.x as int % 2 == 0):
 			for valid_delta in Global.DELTA_LIST_OF_NEIGHBOUR_FIELD.even_rows:
@@ -234,12 +234,6 @@ func is_neighbour(attacker_coord: Vector2, defender_coord: Vector2):
 				if (delta == valid_delta):
 					return true
 	return false
-		
-func difference_of_vectors(vector_A, vector_B) -> Vector2:
-	var new_x = vector_B.x as int - vector_A.x as int
-	var new_y = vector_B.y as int - vector_A.y as int
-	
-	return Vector2(new_x, new_y)
 		
 func _on_EndTurnButton_pressed():
 	var opponent_index: int = get_opponent_index(Global.current_player_index)
