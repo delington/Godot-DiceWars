@@ -15,6 +15,25 @@ const FIRST_PLAYER_INDEX = 0
 const SECOND_PLAYER_INDEX = 1
 const OPTION_BUTTON_PLAYER_KEY = "selected_player"
 
+const DELTA_LIST_OF_NEIGHBOUR_FIELD = {
+	"even_rows": [
+		Vector2(-1, 0),
+		Vector2(-1, 1),
+		Vector2(0, -1),
+		Vector2(1, 0),
+		Vector2(1, 1),
+		Vector2(0, 1)
+	],
+	"odd_rows": [
+		Vector2(-1, -1),
+		Vector2(-1, 0),
+		Vector2(0, -1),
+		Vector2(1, -1),
+		Vector2(1, 0),
+		Vector2(0, 1)
+	]
+}
+
 var ref: Dictionary
 
 var current_player_index: int

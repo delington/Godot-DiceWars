@@ -12,9 +12,11 @@ const NUMBER_OF_PLAYERS = 2
 const ONE_PLAYER_ALL_FIELDS = NUMBER_OF_FIELDS / 2
 const NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 2
 const MAX_FIELD_DICE_NUMBER = 8
+const MAX_VALUE_OF_A_DICE = 6
 const FIRST_PLAYER_INDEX = 0
 const SECOND_PLAYER_INDEX = 1
 const TURN_LABEL = "'s turn"
+const FIRST_LINE_OFFSET = true
 
 onready var start_label = $"StartLabel"
 onready var end_turn_button = $"EndTurnButton"
@@ -27,8 +29,7 @@ onready var attacker_animation = $"AttackerScoring/AttackerSprite/WinnerAnimatio
 onready var defender_animation = $"DefenderScoring/DefenderSprite/WinnerAnimation"
 
 var attack_from
-var attack_to
-var is_set_attack_from = false
+var is_set_attack_from = false   # for player can only select 1 field to attack from
 var field_array: Array
 
 # Called when the node enters the scene tree for the first time.
@@ -54,6 +55,7 @@ func set_start_label():
 		print("ERROR: player index is out of bounds!")
 
 func set_color_of_fields(field_array):
+	# Dice counts to distribute by players
 	var field_number_array = [ONE_PLAYER_ALL_FIELDS, ONE_PLAYER_ALL_FIELDS]
 	
 	for i in range(0, ROW_COUNT):
@@ -79,7 +81,7 @@ func set_dices_of_fields(field_array):
 		var random_column = get_random_integer(0, COLUMN_COUNT - 1)
 		
 		var field = field_array[random_row][random_column]
-		if field.dice_number < 8 && field.select_chance != 1 && field.select_chance != 2:	#give more equal distribution of dice values
+		if field.dice_number < MAX_FIELD_DICE_NUMBER && field.select_chance != 1 && field.select_chance != 2:	#give more equal distribution of dice values
 			if field.color == Global.get_player_color_value_by_index(FIRST_PLAYER_INDEX) :
 				set_field_dice_if_valid(field, player_dice_array, FIRST_PLAYER_INDEX)
 			
@@ -91,15 +93,16 @@ func set_dices_of_fields(field_array):
 func set_all_fields_to_have_one_dice(fields):
 	for i in range(0, ROW_COUNT):
 		for j in range(0, COLUMN_COUNT):
-			set_field_dices(fields[i][j], 1)
+			fields[i][j].set_dice_number(1)
 
 func set_field_dice_if_valid(field, player_dice_array: Array, player_index):
 	var random_dice_number = get_random_integer(1, MAX_FIELD_DICE_NUMBER - 1)	#because earlier we set all fields at least to value 1
 	var updated_field_dice_number = field.dice_number + random_dice_number
 	var updated_player_dice_number = player_dice_array[player_index] - random_dice_number
 	
+	# If we can deal more dice(s) to the field we do it
 	if (updated_field_dice_number <= MAX_FIELD_DICE_NUMBER && updated_player_dice_number >= 0):
-		set_field_dices(field, updated_field_dice_number)
+		field.set_dice_number(updated_field_dice_number)
 		player_dice_array[player_index] = updated_player_dice_number
 		
 func is_empty(array: Array):
@@ -107,10 +110,6 @@ func is_empty(array: Array):
 		if element > 0:
 			return false
 	return true
-
-func set_field_dices(field, settable_dice_number):
-	field.set_text(String(settable_dice_number))
-	field.dice_number = settable_dice_number
 	
 func get_random_integer(low_range, upper_range):
 	var generator = RandomNumberGenerator.new()
@@ -127,7 +126,7 @@ func create_game_field() -> Array:
 		field_array[i] = []
 		var new_y = START_HEXA_COORD.y + aggregated_offset.y
 		
-		if i % 2 == 1:
+		if is_first_line_offset(i):
 			aggregated_offset.x = 0
 		else:
 			aggregated_offset.x = ROW_OFFSET
@@ -145,6 +144,11 @@ func create_game_field() -> Array:
 		aggregated_offset.y += OFFSET.y
 		
 	return field_array
+
+func is_first_line_offset(i):
+	if FIRST_LINE_OFFSET:
+		return i % 2 == 1
+	return i % 2 == 0
 
 func place_hexagon_tile(scene, instance, x, y):
 	instance.position.x = x
@@ -165,17 +169,21 @@ func handle_battle(field):
 	var opponent_index: int = get_opponent_index(Global.current_player_index)
 	var opponent_player_color: Color = Global.player_colors_dict[opponent_index].value
 	
+	# When attacker select the field to attack from
 	if (field.color == current_player_color && !is_set_attack_from && field.dice_number > 1):
-		#handle_selection(field)
 		field.set_selected()
 		attack_from = get_field_from_array(field.coordinate)
 		is_set_attack_from = true
 		
-	elif (field.color == current_player_color && is_set_attack_from && attack_from != null && field.coordinate == attack_from.coordinate):
+	# When attacker unselect the already selected field
+	elif (field.color == current_player_color && is_set_attack_from && attack_from != null \
+	&& field.coordinate == attack_from.coordinate):
 		field.set_unselected()
 		is_set_attack_from = false
 		
-	elif (field.color == opponent_player_color && is_set_attack_from):
+	# When attacker select the field to attack
+	elif (field.color == opponent_player_color && is_set_attack_from \
+	&& is_neighbour(attack_from.coordinate, field.coordinate)):
 		var winner_player_index = get_winner(attack_from, field, Global.current_player_index)
 		
 		is_set_attack_from = false
@@ -190,6 +198,7 @@ func get_winner(attacker, defender, attacker_player_index: int) -> int:
 	defender_scoring_label.text = defender_score as String
 	defender_label.modulate = Global.player_colors_dict[get_opponent_index(attacker_player_index) as int].value
 	
+	# When the attacker wins
 	if (attacker_score > defender_score):
 		attacker_animation.play("turn_attacker")
 		attach_defender_field_to_attacker(attacker, defender)
@@ -197,6 +206,7 @@ func get_winner(attacker, defender, attacker_player_index: int) -> int:
 		
 		return attacker_player_index
 	
+	# Else the defender wins
 	defender_animation.play("turn_defender")
 	attacker.set_dice_number(1)   #attacker lose dices except one
 	return get_opponent_index(attacker_player_index)
@@ -207,18 +217,30 @@ func attach_defender_field_to_attacker(attacker_field, defender_field):
 	defender_field.set_color(attacker_field.color)
 	
 func get_dice_score(dice_number) -> int:
-	return get_random_integer(dice_number, dice_number * 8)
+	return get_random_integer(dice_number, dice_number * MAX_VALUE_OF_A_DICE)
 
 func get_field_from_array(coordinate: Vector2):
 	return field_array[coordinate.x][coordinate.y]
 
-func handle_selection(field):
-	if field.selected:
-		field.set_unselected()
-	else: 
-		field.set_selected()
-
-
+func is_neighbour(attacker_coord: Vector2, defender_coord: Vector2):
+	var delta = difference_of_vectors(attacker_coord, defender_coord)
+	if (FIRST_LINE_OFFSET):
+		if (attacker_coord.x as int % 2 == 0):
+			for valid_delta in Global.DELTA_LIST_OF_NEIGHBOUR_FIELD.even_rows:
+				if (delta == valid_delta):
+					return true
+		elif (attacker_coord.x as int % 2 == 1):
+			for valid_delta in Global.DELTA_LIST_OF_NEIGHBOUR_FIELD.odd_rows:
+				if (delta == valid_delta):
+					return true
+	return false
+		
+func difference_of_vectors(vector_A, vector_B) -> Vector2:
+	var new_x = vector_B.x as int - vector_A.x as int
+	var new_y = vector_B.y as int - vector_A.y as int
+	
+	return Vector2(new_x, new_y)
+		
 func _on_EndTurnButton_pressed():
 	var opponent_index: int = get_opponent_index(Global.current_player_index)
 	Global.current_player_index = opponent_index
