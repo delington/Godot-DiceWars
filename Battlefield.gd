@@ -115,9 +115,10 @@ func distribute_additional_player_dices(field_array):
 		for i in range(0, ROW_COUNT): #exclusive upper range
 			for j in range(0, COLUMN_COUNT):
 				var current_field = field_array[i][j]
+				var current_field_dice_number = current_field.dice_number
 				
-				if (current_field.color == Global.get_current_player().value && current_field.dice_number < MAX_FIELD_DICE_NUMBER): #can put dices to the field
-					var dice_map = get_player_and_field_updated_dice_parameters(current_field.dice_number, player_dice_count)
+				if (current_field.color == Global.get_current_player().value && current_field_dice_number < MAX_FIELD_DICE_NUMBER): #can put dices to the field
+					var dice_map = get_player_and_field_updated_dice_parameters_without_redundant_random_values(current_field_dice_number, player_dice_count) #add that number of dices which still can be placed
 					
 					if (dice_map[UPDATED_FIELD_DICE_NUMBER] <= MAX_FIELD_DICE_NUMBER && dice_map[UPDATED_PLAYER_DICE_NUMBER] >= 0):
 						current_field.set_dice_number(dice_map[UPDATED_FIELD_DICE_NUMBER])
@@ -137,8 +138,11 @@ func set_all_fields_to_have_one_dice(fields):
 		for j in range(0, COLUMN_COUNT):
 			fields[i][j].set_dice_number(1)
 
-func get_player_and_field_updated_dice_parameters(field_dice_number: int, player_dice_count: int):
-	var random_dice_number = get_random_integer(1, MAX_FIELD_DICE_NUMBER - field_dice_number)	#add that number of dices which still can be placed
+func get_player_and_field_updated_dice_parameters_without_redundant_random_values(field_dice_number: int, player_dice_count: int):
+	return get_player_and_field_updated_dice_parameters(field_dice_number, player_dice_count, field_dice_number)
+
+func get_player_and_field_updated_dice_parameters(field_dice_number: int, player_dice_count: int, difference_of_max_random_value: int):
+	var random_dice_number = get_random_integer(1, MAX_FIELD_DICE_NUMBER - difference_of_max_random_value)
 	var updated_field_dice_number = field_dice_number + random_dice_number
 	var updated_player_dice_number = player_dice_count - random_dice_number
 	
@@ -148,9 +152,9 @@ func get_player_and_field_updated_dice_parameters(field_dice_number: int, player
 	}
 
 func set_field_dice_if_valid(field, player_dice_array: Array, player_index):
-	var random_dice_number = get_random_integer(1, MAX_FIELD_DICE_NUMBER - 1)	#because earlier we set all fields at least to value 1
-	var updated_field_dice_number = field.dice_number + random_dice_number
-	var updated_player_dice_number = player_dice_array[player_index] - random_dice_number
+	var updated_data_map = get_player_and_field_updated_dice_parameters(field.dice_number, player_dice_array[player_index], 1) #last param is 1 because earlier we set all fields at least to value 1
+	var updated_field_dice_number = updated_data_map[UPDATED_FIELD_DICE_NUMBER]
+	var updated_player_dice_number = updated_data_map[UPDATED_PLAYER_DICE_NUMBER]
 	
 	# If we can deal more dice(s) to the field we do it
 	if (updated_field_dice_number <= MAX_FIELD_DICE_NUMBER && updated_player_dice_number >= 0):
