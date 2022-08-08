@@ -1,5 +1,7 @@
 extends Sprite
 
+const PLAYER_PREFIX = "player_"
+
 signal signal_select_field(instance)
 
 var color: Color
@@ -18,10 +20,11 @@ func _ready():
 	area_hexa.connect("input_event", self, "_on_AreaHexa_input_event")
 	self.connect("signal_select_field", Global.ref["Battlefield"], "handle_battle")
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	#self.modulate = color
-	pass
+func set_group(player_index: int):
+	add_to_group(str(PLAYER_PREFIX, player_index))
+	
+func remove_group(player_index: int):
+	remove_from_group(str(PLAYER_PREFIX, player_index))
 
 func set_text(new_text: String):
 	self.text = new_text

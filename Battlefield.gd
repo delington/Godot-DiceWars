@@ -10,13 +10,16 @@ const START_HEXA_COORD = Vector2(50, 50)
 const NUMBER_OF_FIELDS = COLUMN_COUNT * ROW_COUNT
 const NUMBER_OF_PLAYERS = 2
 const ONE_PLAYER_ALL_FIELDS = NUMBER_OF_FIELDS / 2
-const NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 2
+const NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 2 # it would be 3 times but we set all fields to have at least 1 dice on it
 const MAX_FIELD_DICE_NUMBER = 8
 const MAX_VALUE_OF_A_DICE = 6
 const FIRST_PLAYER_INDEX = 0
 const SECOND_PLAYER_INDEX = 1
 const TURN_LABEL = "'s turn"
 const FIRST_LINE_OFFSET = true
+const UPDATED_FIELD_DICE_NUMBER = "updated_field_dice_number"
+const UPDATED_PLAYER_DICE_NUMBER = "updated_player_dice_number"
+const PLAYER_PREFIX = "player_"
 
 onready var start_label = $"StartLabel"
 onready var end_turn_button = $"EndTurnButton"
@@ -62,12 +65,15 @@ func set_color_of_fields(field_array):
 		for j in range(0, COLUMN_COUNT):
 			var random_player_index = get_random_integer(0,1)
 			if (field_number_array[random_player_index] > 0):
-				field_array[i][j].set_color(Global.get_player_color_value_by_index(random_player_index))
-				field_number_array[random_player_index] -= 1
+				handle_attach_field_to_player(field_array[i][j], random_player_index, field_number_array)
 			else: 
 				var opponent_player_index: int = get_opponent_index(random_player_index)
-				field_array[i][j].set_color(Global.get_player_color_value_by_index(opponent_player_index))
-				field_number_array[opponent_player_index] -= 1
+				handle_attach_field_to_player(field_array[i][j], opponent_player_index, field_number_array)
+				
+func handle_attach_field_to_player(field, player_index, field_number_array):
+	field.set_group(player_index)
+	field.set_color(Global.get_player_color_value_by_index(player_index))
+	field_number_array[player_index] -= 1
 
 func get_opponent_index(random_player_index: int) -> int:
 	return random_player_index == 0 if 1 else 0
@@ -77,7 +83,7 @@ func set_dices_of_fields(field_array):
 	var player_dice_array = [NUMBER_OF_DICES, NUMBER_OF_DICES]
 	
 	while(!is_empty(player_dice_array)):
-		var random_row = get_random_integer(0, ROW_COUNT - 1)
+		var random_row = get_random_integer(0, ROW_COUNT - 1) #inclusive ranges
 		var random_column = get_random_integer(0, COLUMN_COUNT - 1)
 		
 		var field = field_array[random_row][random_column]
@@ -89,11 +95,57 @@ func set_dices_of_fields(field_array):
 				set_field_dice_if_valid(field, player_dice_array, SECOND_PLAYER_INDEX)
 				
 			field.select_chance += 1
+			
+func distribute_additional_player_dices(field_array):
+	var group_name = str(PLAYER_PREFIX, Global.current_player_index)
+	var current_player_fields = get_tree().get_nodes_in_group(group_name)
+	assert (current_player_fields != null, "Could not find current player field in the group: %s" % group_name)
+	
+	var current_player_field_count = current_player_fields.size()
+	
+	var player_dice_count = current_player_field_count / 2
+	var sum_of_max_dice_fields = 0
+	
+	while(player_dice_count > 0):
+		var max_of_player_dices = current_player_field_count * MAX_FIELD_DICE_NUMBER
+		
+		if (get_sum_of_player_dices(group_name) >= max_of_player_dices):	# check if all fields are full
+			return
+		
+		for i in range(0, ROW_COUNT): #exclusive upper range
+			for j in range(0, COLUMN_COUNT):
+				var current_field = field_array[i][j]
+				
+				if (current_field.color == Global.get_current_player().value && current_field.dice_number < MAX_FIELD_DICE_NUMBER): #can put dices to the field
+					var dice_map = get_player_and_field_updated_dice_parameters(current_field.dice_number, player_dice_count)
+					
+					if (dice_map[UPDATED_FIELD_DICE_NUMBER] <= MAX_FIELD_DICE_NUMBER && dice_map[UPDATED_PLAYER_DICE_NUMBER] >= 0):
+						current_field.set_dice_number(dice_map[UPDATED_FIELD_DICE_NUMBER])
+						player_dice_count = dice_map[UPDATED_PLAYER_DICE_NUMBER]
+
+func get_sum_of_player_dices(group_name) -> int:
+	var player_fields = get_tree().get_nodes_in_group(group_name)
+	var sum_of_dices = 0
+	
+	for field in player_fields:
+		sum_of_dices += field.dice_number
+	
+	return sum_of_dices
 
 func set_all_fields_to_have_one_dice(fields):
 	for i in range(0, ROW_COUNT):
 		for j in range(0, COLUMN_COUNT):
 			fields[i][j].set_dice_number(1)
+
+func get_player_and_field_updated_dice_parameters(field_dice_number: int, player_dice_count: int):
+	var random_dice_number = get_random_integer(1, MAX_FIELD_DICE_NUMBER - field_dice_number)	#add that number of dices which still can be placed
+	var updated_field_dice_number = field_dice_number + random_dice_number
+	var updated_player_dice_number = player_dice_count - random_dice_number
+	
+	return {
+		UPDATED_FIELD_DICE_NUMBER: updated_field_dice_number,
+		UPDATED_PLAYER_DICE_NUMBER: updated_player_dice_number
+	}
 
 func set_field_dice_if_valid(field, player_dice_array: Array, player_index):
 	var random_dice_number = get_random_integer(1, MAX_FIELD_DICE_NUMBER - 1)	#because earlier we set all fields at least to value 1
@@ -114,7 +166,7 @@ func is_empty(array: Array):
 func get_random_integer(low_range, upper_range):
 	var generator = RandomNumberGenerator.new()
 	generator.randomize()
-	return generator.randi_range(low_range, upper_range) 
+	return generator.randi_range(low_range, upper_range)
 
 func create_game_field() -> Array:
 	var scene = preload(HEXAGON_SCENE_PATH)
@@ -196,13 +248,18 @@ func get_winner(attacker, defender, attacker_player_index: int) -> int:
 	
 	var defender_score = get_dice_score(defender.dice_number)
 	defender_scoring_label.text = defender_score as String
-	defender_label.modulate = Global.player_colors_dict[get_opponent_index(attacker_player_index) as int].value
+	
+	var defender_player_index: int = get_opponent_index(attacker_player_index) as int
+	defender_label.modulate = Global.player_colors_dict[defender_player_index].value
 	
 	# When the attacker wins
 	if (attacker_score > defender_score):
 		attacker_animation.play("turn_attacker")
 		attach_defender_field_to_attacker(attacker, defender)
 		attacker.set_dice_number(1)    #move dices to defender's field
+
+		defender.remove_group(defender_player_index)
+		defender.set_group(attacker_player_index)
 		
 		return attacker_player_index
 	
@@ -236,6 +293,8 @@ func is_neighbour(attacker_coord: Vector2, defender_coord: Vector2):
 	return false
 		
 func _on_EndTurnButton_pressed():
+	distribute_additional_player_dices(field_array)
+	
 	var opponent_index: int = get_opponent_index(Global.current_player_index)
 	Global.current_player_index = opponent_index
 	
