@@ -2,7 +2,7 @@ extends Control
 
 signal change_scene()
 
-onready var option_button = $"OptionButton"
+onready var option_button = $"%OptionButton"
 
 
 # Called when the node enters the scene tree for the first time.

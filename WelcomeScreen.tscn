@@ -76,6 +76,7 @@ custom_styles/pressed = SubResource( 3 )
 text = "Start Game"
 
 [node name="OptionButton" type="OptionButton" parent="."]
+unique_name_in_owner = true
 margin_left = 412.056
 margin_top = 239.0
 margin_right = 538.056
