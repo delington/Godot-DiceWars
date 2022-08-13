@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://Roboto-Black.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Battlefield.gd" type="Script" id=2]
@@ -7,6 +7,10 @@
 [ext_resource path="res://ExitGameButton.gd" type="Script" id=5]
 [ext_resource path="res://img/sword.png" type="Texture" id=7]
 [ext_resource path="res://img/shield.png" type="Texture" id=8]
+
+[sub_resource type="DynamicFont" id=15]
+size = 60
+font_data = ExtResource( 1 )
 
 [sub_resource type="DynamicFont" id=1]
 size = 45
@@ -219,13 +223,13 @@ script = ExtResource( 2 )
 
 [node name="StartLabel" type="Label" parent="."]
 unique_name_in_owner = true
-margin_left = 1338.0
-margin_top = 747.0
-margin_right = 1632.0
-margin_bottom = 805.0
+margin_left = 1378.0
+margin_top = 722.0
+margin_right = 1537.0
+margin_bottom = 793.0
 rect_pivot_offset = Vector2( -25, 81 )
-custom_fonts/font = SubResource( 1 )
-text = "starts the turn"
+custom_fonts/font = SubResource( 15 )
+text = "starts"
 script = ExtResource( 4 )
 
 [node name="EndTurnLabel" type="Label" parent="."]

@@ -7,3 +7,7 @@
 script = ExtResource( 2 )
 
 [node name="WelcomeScreen" parent="." instance=ExtResource( 1 )]
+margin_left = 518.0
+margin_top = 180.0
+margin_right = 518.0
+margin_bottom = 180.0

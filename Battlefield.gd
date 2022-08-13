@@ -47,6 +47,7 @@ func _ready():
 	set_color_of_fields(field_array)
 	set_dices_of_fields(field_array)
 
+	end_game_label.hide()
 	winner_label.hide()
 
 func set_start_label():

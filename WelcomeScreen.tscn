@@ -17,7 +17,7 @@ outline_color = Color( 0, 0, 0, 1 )
 font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=2]
-size = 15
+size = 18
 outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
 use_filter = true
@@ -27,6 +27,7 @@ font_data = ExtResource( 2 )
 bg_color = Color( 1, 0, 0, 1 )
 
 [sub_resource type="DynamicFont" id=5]
+size = 19
 font_data = ExtResource( 2 )
 
 [node name="WelcomeScreen" type="Control"]
@@ -66,10 +67,10 @@ custom_fonts/font = SubResource( 4 )
 text = "Select color"
 
 [node name="Button" type="Button" parent="."]
-margin_left = 402.0
-margin_top = 401.0
-margin_right = 490.0
-margin_bottom = 425.0
+margin_left = 387.113
+margin_top = 398.0
+margin_right = 496.113
+margin_bottom = 426.0
 rect_scale = Vector2( 1.70573, 2.50441 )
 custom_fonts/font = SubResource( 2 )
 custom_styles/pressed = SubResource( 3 )
@@ -77,10 +78,10 @@ text = "Start Game"
 
 [node name="OptionButton" type="OptionButton" parent="."]
 unique_name_in_owner = true
-margin_left = 412.056
-margin_top = 239.0
-margin_right = 538.056
-margin_bottom = 264.0
+margin_left = 609.604
+margin_top = 188.0
+margin_right = 753.604
+margin_bottom = 217.0
 rect_scale = Vector2( 1.03991, 1.04 )
 custom_fonts/font = SubResource( 5 )
 text = "Player Colors"
