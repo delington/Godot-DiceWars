@@ -1,6 +1,6 @@
 extends Control
 
-signal change_scene()
+signal change_from_welcome_screen()
 
 onready var option_button = $"%OptionButton"
 
@@ -19,4 +19,4 @@ func _ready():
 
 func _on_Button_pressed():
 	Global.current_player_index = option_button.get_selected_id()
-	emit_signal("change_scene")
+	emit_signal("change_from_welcome_screen")
