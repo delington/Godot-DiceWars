@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Roboto-Black.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Battlefield.gd" type="Script" id=2]
@@ -170,11 +170,48 @@ tracks/2/keys = {
 "values": [ Vector2( 0.291314, 0.271289 ), Vector2( 0.32, 0.282 ), Vector2( 0.291314, 0.271289 ) ]
 }
 
+[sub_resource type="DynamicFont" id=11]
+size = 58
+font_data = ExtResource( 1 )
+
+[sub_resource type="Animation" id=12]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("EndGameLabel:visible_characters")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 5 ]
+}
+
+[sub_resource type="Animation" id=13]
+resource_name = "default"
+length = 1.7
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("EndGameLabel:visible_characters")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+}
+
 [node name="Battlefield" type="Node2D"]
 position = Vector2( 0, 3 )
 script = ExtResource( 2 )
 
 [node name="StartLabel" type="Label" parent="."]
+unique_name_in_owner = true
 margin_left = 1328.0
 margin_top = 784.0
 margin_right = 1622.0
@@ -193,6 +230,7 @@ custom_fonts/font = SubResource( 1 )
 text = "End turn"
 
 [node name="EndTurnButton" type="Button" parent="."]
+unique_name_in_owner = true
 margin_left = 1614.0
 margin_top = 587.011
 margin_right = 1900.0
@@ -210,10 +248,12 @@ texture = ExtResource( 3 )
 offset = Vector2( 0, -4.08936 )
 
 [node name="TurnAnimation" type="AnimationPlayer" parent="EndTurnButton/Sprite"]
+unique_name_in_owner = true
 anims/RESET = SubResource( 10 )
 anims/default = SubResource( 9 )
 
 [node name="AttackerScoring" type="Label" parent="."]
+unique_name_in_owner = true
 margin_left = 1382.0
 margin_top = 336.0
 margin_right = 1559.0
@@ -223,6 +263,7 @@ text = "0"
 align = 1
 
 [node name="AttackerLabel" type="Label" parent="AttackerScoring"]
+unique_name_in_owner = true
 margin_left = 5.0
 margin_top = 132.0
 margin_right = 196.0
@@ -235,10 +276,12 @@ position = Vector2( 88, 237 )
 scale = Vector2( 0.138184, 0.142578 )
 texture = ExtResource( 7 )
 
-[node name="WinnerAnimation" type="AnimationPlayer" parent="AttackerScoring/AttackerSprite"]
+[node name="AttackerAnimation" type="AnimationPlayer" parent="AttackerScoring/AttackerSprite"]
+unique_name_in_owner = true
 anims/turn_attacker = SubResource( 7 )
 
 [node name="DefenderScoring" type="Label" parent="."]
+unique_name_in_owner = true
 margin_left = 1661.0
 margin_top = 336.0
 margin_right = 1838.0
@@ -248,6 +291,7 @@ text = "0"
 align = 1
 
 [node name="DefenderLabel" type="Label" parent="DefenderScoring"]
+unique_name_in_owner = true
 margin_left = -2.0
 margin_top = 135.0
 margin_right = 185.0
@@ -260,7 +304,34 @@ position = Vector2( 89, 237 )
 scale = Vector2( 0.291314, 0.271289 )
 texture = ExtResource( 8 )
 
-[node name="WinnerAnimation" type="AnimationPlayer" parent="DefenderScoring/DefenderSprite"]
+[node name="DefenderAnimation" type="AnimationPlayer" parent="DefenderScoring/DefenderSprite"]
+unique_name_in_owner = true
 anims/turn_defender = SubResource( 8 )
+
+[node name="EndGameLabel" type="Label" parent="."]
+unique_name_in_owner = true
+margin_left = 1475.0
+margin_top = 35.0
+margin_right = 1796.0
+margin_bottom = 104.0
+rect_pivot_offset = Vector2( -1775, 551 )
+custom_fonts/font = SubResource( 11 )
+text = "Game over"
+percent_visible = 0.625
+
+[node name="WinnerAnimation" type="AnimationPlayer" parent="EndGameLabel"]
+unique_name_in_owner = true
+root_node = NodePath("../..")
+anims/RESET = SubResource( 12 )
+anims/default = SubResource( 13 )
+
+[node name="WinnerLabel" type="Label" parent="."]
+unique_name_in_owner = true
+margin_left = 1475.0
+margin_top = 137.0
+margin_right = 1796.0
+margin_bottom = 206.0
+rect_pivot_offset = Vector2( -1775, 551 )
+custom_fonts/font = SubResource( 11 )
 
 [connection signal="pressed" from="EndTurnButton" to="." method="_on_EndTurnButton_pressed"]

@@ -1,3 +1,5 @@
+class_name HexaSprite
+
 extends Sprite
 
 const PLAYER_PREFIX = "player_"

@@ -12,7 +12,7 @@ func _ready():
 #	pass
 
 func set_text_and_color(player_index) -> void:
-	var opponent_object = Global.player_colors_dict[player_index]
-	var opponent_color: String = opponent_object.text
-	self.text = str(opponent_color, TURN_LABEL)
-	self.add_color_override("font_color", opponent_object.value)
+	var player_object = Global.player_colors_dict[player_index]
+	var player_color: String = player_object.text
+	self.text = str(player_color, TURN_LABEL)
+	self.add_color_override("font_color", player_object.value)

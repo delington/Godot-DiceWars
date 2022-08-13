@@ -15,22 +15,25 @@ const MAX_FIELD_DICE_NUMBER = 8
 const MAX_VALUE_OF_A_DICE = 6
 const FIRST_PLAYER_INDEX = 0
 const SECOND_PLAYER_INDEX = 1
-const TURN_LABEL = "'s turn"
+const TURN_LABEL_POSTFIX = "'s turn"
+const WINNER_LABEL_POSTFIX = " wins!"
 const FIRST_LINE_OFFSET = true
 const UPDATED_FIELD_DICE_NUMBER = "updated_field_dice_number"
 const UPDATED_PLAYER_DICE_NUMBER = "updated_player_dice_number"
 const PLAYER_PREFIX = "player_"
 
-onready var start_label = $"StartLabel"
-onready var end_turn_button = $"EndTurnButton"
-onready var end_button_animation_sprite = $"EndTurnButton/EndTurnButtonAnimationSprite"
-onready var attacker_scoring_label = $"AttackerScoring"
-onready var defender_scoring_label = $"DefenderScoring"
-onready var attacker_label = $"AttackerScoring/AttackerLabel"
-onready var defender_label = $"DefenderScoring/DefenderLabel"
-onready var attacker_animation = $"AttackerScoring/AttackerSprite/WinnerAnimation"
-onready var defender_animation = $"DefenderScoring/DefenderSprite/WinnerAnimation"
-onready var turn_animation = $"EndTurnButton/Sprite/TurnAnimation"
+onready var start_label = $"%StartLabel" as Label
+onready var end_turn_button = $"%EndTurnButton" as Button
+onready var attacker_scoring_label = $"%AttackerScoring" as Label
+onready var defender_scoring_label = $"%DefenderScoring" as Label
+onready var attacker_label = $"%AttackerLabel" as Label
+onready var defender_label = $"%DefenderLabel" as Label
+onready var attacker_animation = $"%AttackerAnimation" as AnimationPlayer
+onready var defender_animation = $"%DefenderAnimation" as AnimationPlayer
+onready var turn_animation = $"%TurnAnimation" as AnimationPlayer
+onready var end_game_label_winner_animation = $"%WinnerAnimation" as AnimationPlayer
+onready var end_game_label = $"%EndGameLabel" as Label
+onready var winner_label = $"%WinnerLabel" as Label
 
 var attack_from
 var is_set_attack_from = false   # for player can only select 1 field to attack from
@@ -44,10 +47,7 @@ func _ready():
 	set_color_of_fields(field_array)
 	set_dices_of_fields(field_array)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	#print(parameters)
-	pass
+	winner_label.hide()
 
 func set_start_label():
 	var selected_player_index: int = Global.current_player_index
@@ -87,14 +87,17 @@ func set_dices_of_fields(field_array):
 		var random_column = get_random_integer(0, COLUMN_COUNT - 1)
 		
 		var field = field_array[random_row][random_column]
-		if field.dice_number < MAX_FIELD_DICE_NUMBER && field.select_chance != 1 && field.select_chance != 2:	#give more equal distribution of dice values
-			if field.color == Global.get_player_color_value_by_index(FIRST_PLAYER_INDEX) :
-				set_field_dice_if_valid(field, player_dice_array, FIRST_PLAYER_INDEX)
-			
-			elif field.color == Global.get_player_color_value_by_index(SECOND_PLAYER_INDEX) :
-				set_field_dice_if_valid(field, player_dice_array, SECOND_PLAYER_INDEX)
-				
+		if field.dice_number < MAX_FIELD_DICE_NUMBER:
 			field.select_chance += 1
+			
+			if (field.select_chance != 1 && field.select_chance != 2): #give more equal distribution of dice values
+
+				if field.color == Global.get_player_color_value_by_index(FIRST_PLAYER_INDEX) :
+					set_field_dice_if_valid(field, player_dice_array, FIRST_PLAYER_INDEX)
+				
+				elif field.color == Global.get_player_color_value_by_index(SECOND_PLAYER_INDEX) :
+					set_field_dice_if_valid(field, player_dice_array, SECOND_PLAYER_INDEX)
+				
 			
 func distribute_additional_player_dices(field_array):
 	var group_name = str(PLAYER_PREFIX, Global.current_player_index)
@@ -264,13 +267,26 @@ func get_winner(attacker, defender, attacker_player_index: int) -> int:
 
 		defender.remove_group(defender_player_index)
 		defender.set_group(attacker_player_index)
+
+		if(is_end_of_game()):
+			handle_game_end()
 		
 		return attacker_player_index
 	
 	# Else the defender wins
 	defender_animation.play("turn_defender")
 	attacker.set_dice_number(1)   #attacker lose dices except one
+
 	return get_opponent_index(attacker_player_index)
+
+func handle_game_end():
+	end_game_label.show()
+	end_game_label_winner_animation.play("default")
+
+	var current_player = Global.get_current_player()
+	winner_label.text = str(current_player.text, WINNER_LABEL_POSTFIX)
+	winner_label.add_color_override("font_color", current_player.value)
+	winner_label.show()
 	
 func attach_defender_field_to_attacker(attacker_field, defender_field):
 	var new_dice_number = attacker_field.dice_number - 1
@@ -295,6 +311,15 @@ func is_neighbour(attacker_coord: Vector2, defender_coord: Vector2):
 				if (delta == valid_delta):
 					return true
 	return false
+
+func is_end_of_game() -> bool:
+	var group_name = str(PLAYER_PREFIX, Global.current_player_index)
+	var current_player_fields = get_tree().get_nodes_in_group(group_name)
+
+	if (current_player_fields.size() == NUMBER_OF_FIELDS):
+		return true
+		
+	return false	#current player wins the game
 		
 func _on_EndTurnButton_pressed():
 	distribute_additional_player_dices(field_array)
