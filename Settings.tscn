@@ -1,0 +1,75 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Roboto-Black.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://scripts/Settings.gd" type="Script" id=2]
+
+[sub_resource type="DynamicFont" id=1]
+size = 42
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 69
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 34
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 40
+font_data = ExtResource( 1 )
+
+[node name="Settings" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+
+[node name="Column Count" type="Label" parent="."]
+margin_left = 549.0
+margin_top = 265.0
+margin_right = 813.0
+margin_bottom = 313.0
+custom_fonts/font = SubResource( 1 )
+text = "Column count:"
+
+[node name="MainLabel" type="Label" parent="."]
+margin_left = 828.0
+margin_top = 35.0
+margin_right = 1090.0
+margin_bottom = 117.0
+custom_fonts/font = SubResource( 2 )
+text = "Settings"
+
+[node name="RowCount" type="Label" parent="."]
+margin_left = 549.0
+margin_top = 191.0
+margin_right = 744.0
+margin_bottom = 239.0
+custom_fonts/font = SubResource( 1 )
+text = "Row Count:"
+
+[node name="RowInputText" type="LineEdit" parent="."]
+unique_name_in_owner = true
+margin_left = 846.0
+margin_top = 193.0
+margin_right = 952.0
+margin_bottom = 244.0
+custom_fonts/font = SubResource( 3 )
+
+[node name="ColumnInputText" type="LineEdit" parent="."]
+unique_name_in_owner = true
+margin_left = 846.0
+margin_top = 263.0
+margin_right = 952.0
+margin_bottom = 314.0
+custom_fonts/font = SubResource( 3 )
+
+[node name="ApplyButton" type="Button" parent="."]
+margin_left = 828.0
+margin_top = 791.0
+margin_right = 1121.0
+margin_bottom = 858.0
+custom_fonts/font = SubResource( 4 )
+text = "Apply changes"
+
+[connection signal="pressed" from="ApplyButton" to="." method="_on_ApplyButton_pressed"]

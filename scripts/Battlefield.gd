@@ -2,15 +2,15 @@ extends Node2D
 
 const HEXAGON_SCENE_PATH = "res://HexaSprite.tscn"
 const WELCOME_SCENE_PATH = "res://WelcomeScreen.tscn"
-const ROW_COUNT = 10
-const COLUMN_COUNT = 10
+var ROW_COUNT = Global.settings.row_count
+var COLUMN_COUNT = Global.settings.column_count
 const ROW_OFFSET = 44
 const OFFSET = Vector2(88, 73)
 const START_HEXA_COORD = Vector2(50, 50)
-const NUMBER_OF_FIELDS = COLUMN_COUNT * ROW_COUNT
+var NUMBER_OF_FIELDS = COLUMN_COUNT * ROW_COUNT
 const NUMBER_OF_PLAYERS = 2
-const ONE_PLAYER_ALL_FIELDS = NUMBER_OF_FIELDS / 2
-const NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 2 # it would be 3 times but we set all fields to have at least 1 dice on it
+var ONE_PLAYER_ALL_FIELDS = NUMBER_OF_FIELDS / 2
+var NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 2 # it would be 3 times but we set all fields to have at least 1 dice on it
 const MAX_FIELD_DICE_NUMBER = 8
 const MAX_VALUE_OF_A_DICE = 6
 const FIRST_PLAYER_INDEX = 0
@@ -42,6 +42,8 @@ var field_array: Array
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Global.ref["Battlefield"] = self
+
+	set_start_label()
 	
 	field_array = create_game_field()
 	set_color_of_fields(field_array)
