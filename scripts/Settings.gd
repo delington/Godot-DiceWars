@@ -7,7 +7,8 @@ onready var column_count_input = $"%ColumnInputText"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	row_count_input.set_text(str(Global.settings.row_count))
+	column_count_input.set_text(str(Global.settings.column_count))
 
 func _on_ApplyButton_pressed():
 	Global.settings.row_count = row_count_input.get_text() as int
