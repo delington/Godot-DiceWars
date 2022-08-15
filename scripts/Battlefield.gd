@@ -182,11 +182,11 @@ func get_random_integer(low_range, upper_range):
 func create_game_field() -> Array:
 	var scene = preload(HEXAGON_SCENE_PATH)
 	var aggregated_offset = Vector2(0, 0)
-	var field_array = []
+	var array_of_fields = []
 	
 	for i in range(0, ROW_COUNT):
-		field_array.append([])
-		field_array[i] = []
+		array_of_fields.append([])
+		array_of_fields[i] = []
 		var new_y = START_HEXA_COORD.y + aggregated_offset.y
 		
 		if is_first_line_offset(i):
@@ -195,18 +195,18 @@ func create_game_field() -> Array:
 			aggregated_offset.x = ROW_OFFSET
 		
 		for j in range(0, COLUMN_COUNT):
-			field_array[i].append([])
+			array_of_fields[i].append([])
 			var new_x = START_HEXA_COORD.x + aggregated_offset.x
 			
 			var instance = create_instance(scene)
-			field_array[i][j] = instance
+			array_of_fields[i][j] = instance
 			place_hexagon_tile(scene, instance, new_x, new_y)
 			set_instance_coordinates(instance, i, j)
 			aggregated_offset.x += OFFSET.x
 			
 		aggregated_offset.y += OFFSET.y
 		
-	return field_array
+	return array_of_fields
 
 func is_first_line_offset(i):
 	if FIRST_LINE_OFFSET:
