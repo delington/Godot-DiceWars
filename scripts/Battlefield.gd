@@ -61,7 +61,7 @@ func set_start_label():
 	else:
 		print("ERROR: player index is out of bounds!")
 
-func set_color_of_fields(field_array):
+func set_color_of_fields(array_of_field):
 	# Dice counts to distribute by players
 	var field_number_array = [ONE_PLAYER_ALL_FIELDS, ONE_PLAYER_ALL_FIELDS]
 	
@@ -69,10 +69,10 @@ func set_color_of_fields(field_array):
 		for j in range(0, COLUMN_COUNT):
 			var random_player_index = get_random_integer(0,1)
 			if (field_number_array[random_player_index] > 0):
-				handle_attach_field_to_player(field_array[i][j], random_player_index, field_number_array)
+				handle_attach_field_to_player(array_of_field[i][j], random_player_index, field_number_array)
 			else: 
 				var opponent_player_index: int = get_opponent_index(random_player_index)
-				handle_attach_field_to_player(field_array[i][j], opponent_player_index, field_number_array)
+				handle_attach_field_to_player(array_of_field[i][j], opponent_player_index, field_number_array)
 				
 func handle_attach_field_to_player(field, player_index, field_number_array):
 	field.set_group(player_index)
@@ -82,15 +82,15 @@ func handle_attach_field_to_player(field, player_index, field_number_array):
 func get_opponent_index(random_player_index: int) -> int:
 	return random_player_index == 0 if 1 else 0
 
-func set_dices_of_fields(field_array):
-	set_all_fields_to_have_one_dice(field_array)
+func set_dices_of_fields(array_of_field):
+	set_all_fields_to_have_one_dice(array_of_field)
 	var player_dice_array = [NUMBER_OF_DICES, NUMBER_OF_DICES]
 	
 	while(!is_empty(player_dice_array)):
 		var random_row = get_random_integer(0, ROW_COUNT - 1) #inclusive ranges
 		var random_column = get_random_integer(0, COLUMN_COUNT - 1)
 		
-		var field = field_array[random_row][random_column]
+		var field = array_of_field[random_row][random_column]
 		if field.dice_number < MAX_FIELD_DICE_NUMBER:
 			field.select_chance += 1
 			
@@ -103,7 +103,7 @@ func set_dices_of_fields(field_array):
 					set_field_dice_if_valid(field, player_dice_array, SECOND_PLAYER_INDEX)
 				
 			
-func distribute_additional_player_dices(field_array):
+func distribute_additional_player_dices(array_of_field):
 	var group_name = str(PLAYER_PREFIX, Global.current_player_index)
 	var current_player_fields = get_tree().get_nodes_in_group(group_name)
 	assert (current_player_fields != null, "Could not find current player field in the group: %s" % group_name)
@@ -111,7 +111,6 @@ func distribute_additional_player_dices(field_array):
 	var current_player_field_count = current_player_fields.size()
 	
 	var player_dice_count = current_player_field_count / 2
-	var sum_of_max_dice_fields = 0
 	
 	while(player_dice_count > 0):
 		var max_of_player_dices = current_player_field_count * MAX_FIELD_DICE_NUMBER
@@ -121,7 +120,7 @@ func distribute_additional_player_dices(field_array):
 		
 		for i in range(0, ROW_COUNT): #exclusive upper range
 			for j in range(0, COLUMN_COUNT):
-				var current_field = field_array[i][j]
+				var current_field = array_of_field[i][j]
 				var current_field_dice_number = current_field.dice_number
 				
 				if (current_field.color == Global.get_current_player().value && current_field_dice_number < MAX_FIELD_DICE_NUMBER): #can put dices to the field
