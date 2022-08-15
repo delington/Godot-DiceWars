@@ -247,12 +247,12 @@ func handle_battle(field):
 	# When attacker select the field to attack
 	elif (field.color == opponent_player_color && is_set_attack_from \
 	&& is_neighbour(attack_from.coordinate, field.coordinate)):
-		var winner_player_index = get_winner(attack_from, field, Global.current_player_index)
+		calculate_winner(attack_from, field, Global.current_player_index)
 		
 		is_set_attack_from = false
 		attack_from.set_unselected()
 		
-func get_winner(attacker, defender, attacker_player_index: int) -> int:
+func calculate_winner(attacker, defender, attacker_player_index: int) -> void:
 	var attacker_score = get_dice_score(attacker.dice_number)
 	attacker_scoring_label.text = attacker_score as String
 	attacker_label.modulate = Global.player_colors_dict[attacker_player_index].value
@@ -274,14 +274,10 @@ func get_winner(attacker, defender, attacker_player_index: int) -> int:
 
 		if(is_end_of_game()):
 			handle_game_end()
-		
-		return attacker_player_index
 	
 	# Else the defender wins
 	defender_animation.play("turn_defender")
 	attacker.set_dice_number(1)   #attacker lose dices except one
-
-	return get_opponent_index(attacker_player_index)
 
 func handle_game_end():
 	end_game_label.show()
