@@ -36,8 +36,8 @@ var player_colors_dict = [
 ]
 
 var settings = {
-	"row_count": 0,
-	"column_count": 0
+	"row_count": 5,
+	"column_count": 5
 }
 
 var ref: Dictionary

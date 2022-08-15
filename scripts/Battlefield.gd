@@ -2,15 +2,10 @@ extends Node2D
 
 const HEXAGON_SCENE_PATH = "res://HexaSprite.tscn"
 const WELCOME_SCENE_PATH = "res://WelcomeScreen.tscn"
-var ROW_COUNT = Global.settings.row_count
-var COLUMN_COUNT = Global.settings.column_count
 const ROW_OFFSET = 44
 const OFFSET = Vector2(88, 73)
 const START_HEXA_COORD = Vector2(50, 50)
-var NUMBER_OF_FIELDS = COLUMN_COUNT * ROW_COUNT
 const NUMBER_OF_PLAYERS = 2
-var ONE_PLAYER_ALL_FIELDS = NUMBER_OF_FIELDS / 2
-var NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 2 # it would be 3 times but we set all fields to have at least 1 dice on it
 const MAX_FIELD_DICE_NUMBER = 8
 const MAX_VALUE_OF_A_DICE = 6
 const FIRST_PLAYER_INDEX = 0
@@ -35,7 +30,13 @@ onready var end_game_label_winner_animation = $"%WinnerAnimation" as AnimationPl
 onready var end_game_label = $"%EndGameLabel" as Label
 onready var winner_label = $"%WinnerLabel" as Label
 
-var attack_from
+var ROW_COUNT = Global.settings.row_count
+var COLUMN_COUNT = Global.settings.column_count
+var NUMBER_OF_FIELDS = COLUMN_COUNT * ROW_COUNT
+var ONE_PLAYER_ALL_FIELDS = NUMBER_OF_FIELDS / 2
+var NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 2 # it would be 3 times but we set all fields to have at least 1 dice on it
+
+var attack_from = null
 var is_set_attack_from = false   # for player can only select 1 field to attack from
 var field_array: Array
 
