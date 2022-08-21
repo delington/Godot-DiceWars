@@ -8,6 +8,28 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Reference",
+"class": "GutHookScript",
+"language": "GDScript",
+"path": "res://addons/gut/hook_script.gd"
+}, {
+"base": "Node",
+"class": "GutTest",
+"language": "GDScript",
+"path": "res://addons/gut/test.gd"
+}, {
+"base": "Sprite",
+"class": "HexaSprite",
+"language": "GDScript",
+"path": "res://scripts/HexaSprite.gd"
+} ]
+_global_script_class_icons={
+"GutHookScript": "",
+"GutTest": "",
+"HexaSprite": ""
+}
+
 [application]
 
 config/name="DiceWars"
@@ -27,7 +49,7 @@ window/stretch/aspect="keep"
 
 [editor_plugins]
 
-enabled=PoolStringArray(  )
+enabled=PoolStringArray( "res://addons/gut/plugin.cfg" )
 
 [gdnative]
 

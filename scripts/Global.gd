@@ -27,11 +27,11 @@ const DELTA_LIST_OF_NEIGHBOUR_FIELD = {
 var player_colors_dict = [
 	{
 		"text": "Blue",
-		"value": Color.blue
+		"value": Color.royalblue
 	},
 	{
 		"text": "Red",
-		"value": Color.red
+		"value": Color.brown
 	}
 ]
 

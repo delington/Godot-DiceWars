@@ -11,14 +11,14 @@ var text: String = ""
 var selected = false
 var dice_number = 0
 var coordinate = Vector2()
-onready var label_node = $"Label"
 var select_chance = 0
+
+onready var label_node = $"Label"
+onready var area_hexa = $"AreaHexa"
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	#set_color(color)
-	
-	var area_hexa = $"AreaHexa"
 	area_hexa.connect("input_event", self, "_on_AreaHexa_input_event")
 	self.connect("signal_select_field", Global.ref["Battlefield"], "handle_battle")
 

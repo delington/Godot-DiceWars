@@ -16,6 +16,7 @@ const FIRST_LINE_OFFSET = true
 const UPDATED_FIELD_DICE_NUMBER = "updated_field_dice_number"
 const UPDATED_PLAYER_DICE_NUMBER = "updated_player_dice_number"
 const PLAYER_PREFIX = "player_"
+const PLAYER_DICE_COUNT_CAUTION_THRESHOLD: int = 8
 
 onready var start_label = $"%StartLabel" as Label
 onready var end_turn_button = $"%EndTurnButton" as Button
@@ -34,7 +35,10 @@ var ROW_COUNT = Global.settings.row_count
 var COLUMN_COUNT = Global.settings.column_count
 var NUMBER_OF_FIELDS = COLUMN_COUNT * ROW_COUNT
 var ONE_PLAYER_ALL_FIELDS = NUMBER_OF_FIELDS / 2
-var NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 2 # it would be 3 times but we set all fields to have at least 1 dice on it
+var NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 3 # it would be 3 times but we set all fields to have at least 1 dice on it
+var player_dices_to_set = [NUMBER_OF_DICES, NUMBER_OF_DICES]
+
+var hexasprite_scene = preload(HEXAGON_SCENE_PATH)
 
 var attack_from = null
 var is_set_attack_from = false   # for player can only select 1 field to attack from
@@ -45,10 +49,10 @@ func _ready():
 	Global.ref["Battlefield"] = self
 
 	set_start_label()
-	
-	field_array = create_game_field()
+
+	field_array = create_game_field(hexasprite_scene)
 	set_color_of_fields(field_array)
-	set_dices_of_fields(field_array)
+	set_dices_of_fields(field_array, player_dices_to_set)
 
 	end_game_label.hide()
 	winner_label.hide()
@@ -80,13 +84,12 @@ func handle_attach_field_to_player(field, player_index, field_number_array):
 	field_number_array[player_index] -= 1
 
 func get_opponent_index(random_player_index: int) -> int:
-	return random_player_index == 0 if 1 else 0
+	return 0 if random_player_index == 1 else 1
 
-func set_dices_of_fields(array_of_field):
+func set_dices_of_fields(array_of_field: Array, player_dices_to_set: Array):
 	set_all_fields_to_have_one_dice(array_of_field)
-	var player_dice_array = [NUMBER_OF_DICES, NUMBER_OF_DICES]
 	
-	while(!is_empty(player_dice_array)):
+	while(!is_empty(player_dices_to_set)):
 		var random_row = get_random_integer(0, ROW_COUNT - 1) #inclusive ranges
 		var random_column = get_random_integer(0, COLUMN_COUNT - 1)
 		
@@ -97,13 +100,13 @@ func set_dices_of_fields(array_of_field):
 			if (field.select_chance != 1 && field.select_chance != 2): #give more equal distribution of dice values
 
 				if field.color == Global.get_player_color_value_by_index(FIRST_PLAYER_INDEX) :
-					set_field_dice_if_valid(field, player_dice_array, FIRST_PLAYER_INDEX)
+					set_field_dice_if_valid(field, player_dices_to_set, FIRST_PLAYER_INDEX)
 				
 				elif field.color == Global.get_player_color_value_by_index(SECOND_PLAYER_INDEX) :
-					set_field_dice_if_valid(field, player_dice_array, SECOND_PLAYER_INDEX)
+					set_field_dice_if_valid(field, player_dices_to_set, SECOND_PLAYER_INDEX)
 				
 			
-func distribute_additional_player_dices(array_of_field):
+func set_additional_player_dices():
 	var group_name = str(PLAYER_PREFIX, Global.current_player_index)
 	var current_player_fields = get_tree().get_nodes_in_group(group_name)
 	assert (current_player_fields != null, "Could not find current player field in the group: %s" % group_name)
@@ -118,17 +121,16 @@ func distribute_additional_player_dices(array_of_field):
 		if (get_sum_of_player_dices(group_name) >= max_of_player_dices):	# check if all fields are full
 			return
 		
-		for i in range(0, ROW_COUNT): #exclusive upper range
-			for j in range(0, COLUMN_COUNT):
-				var current_field = array_of_field[i][j]
-				var current_field_dice_number = current_field.dice_number
-				
-				if (current_field.color == Global.get_current_player().value && current_field_dice_number < MAX_FIELD_DICE_NUMBER): #can put dices to the field
-					var dice_map = get_player_and_field_updated_dice_parameters_without_redundant_random_values(current_field_dice_number, player_dice_count) #add that number of dices which still can be placed
-					
-					if (dice_map[UPDATED_FIELD_DICE_NUMBER] <= MAX_FIELD_DICE_NUMBER && dice_map[UPDATED_PLAYER_DICE_NUMBER] >= 0):
-						current_field.set_dice_number(dice_map[UPDATED_FIELD_DICE_NUMBER])
-						player_dice_count = dice_map[UPDATED_PLAYER_DICE_NUMBER]
+		var random_field_index = get_random_integer(0, current_player_field_count - 1)
+		var random_field = current_player_fields[random_field_index]
+		var random_field_dice_number = random_field.dice_number
+		
+		if (random_field_dice_number < MAX_FIELD_DICE_NUMBER): #can put dices to the field
+			var dice_map = get_player_and_field_updated_dice_parameters_without_redundant_random_values(random_field_dice_number, player_dice_count) #add that number of dices which still can be placed
+			
+			if (dice_map[UPDATED_FIELD_DICE_NUMBER] <= MAX_FIELD_DICE_NUMBER && dice_map[UPDATED_PLAYER_DICE_NUMBER] >= 0):
+				random_field.set_dice_number(dice_map[UPDATED_FIELD_DICE_NUMBER])
+				player_dice_count = dice_map[UPDATED_PLAYER_DICE_NUMBER]
 
 func get_sum_of_player_dices(group_name) -> int:
 	var player_fields = get_tree().get_nodes_in_group(group_name)
@@ -143,12 +145,25 @@ func set_all_fields_to_have_one_dice(fields):
 	for i in range(0, ROW_COUNT):
 		for j in range(0, COLUMN_COUNT):
 			fields[i][j].set_dice_number(1)
+			if (fields[i][j].color == Global.player_colors_dict[0].value):
+				player_dices_to_set[0] -=1
+			elif (fields[i][j].color == Global.player_colors_dict[1].value):
+				player_dices_to_set[1] -=1
 
-func get_player_and_field_updated_dice_parameters_without_redundant_random_values(field_dice_number: int, player_dice_count: int):
-	return get_player_and_field_updated_dice_parameters(field_dice_number, player_dice_count, field_dice_number)
+func get_player_and_field_updated_dice_parameters_without_redundant_random_values(field_dice_number: int, player_dice_count: int) -> Dictionary:
+	var random_dice_number = get_random_integer(1, MAX_FIELD_DICE_NUMBER - field_dice_number)
 
-func get_player_and_field_updated_dice_parameters(field_dice_number: int, player_dice_count: int, difference_of_max_random_value: int):
+	if (player_dice_count < PLAYER_DICE_COUNT_CAUTION_THRESHOLD): #handle case where random dice count could be bigger than remaining player_dice_count
+		while(random_dice_number > player_dice_count):
+			random_dice_number = get_random_integer(1, MAX_FIELD_DICE_NUMBER - field_dice_number)
+
+	return calculate_updated_field_and_player_dice_numbers(field_dice_number, random_dice_number, player_dice_count)
+
+func get_player_and_field_updated_dice_parameters(field_dice_number: int, player_dice_count: int, difference_of_max_random_value: int) -> Dictionary:
 	var random_dice_number = get_random_integer(1, MAX_FIELD_DICE_NUMBER - difference_of_max_random_value)
+	return calculate_updated_field_and_player_dice_numbers(field_dice_number, random_dice_number, player_dice_count)
+	
+func calculate_updated_field_and_player_dice_numbers(field_dice_number, random_dice_number, player_dice_count) -> Dictionary:
 	var updated_field_dice_number = field_dice_number + random_dice_number
 	var updated_player_dice_number = player_dice_count - random_dice_number
 	
@@ -156,7 +171,7 @@ func get_player_and_field_updated_dice_parameters(field_dice_number: int, player
 		UPDATED_FIELD_DICE_NUMBER: updated_field_dice_number,
 		UPDATED_PLAYER_DICE_NUMBER: updated_player_dice_number
 	}
-
+	
 func set_field_dice_if_valid(field, player_dice_array: Array, player_index):
 	var updated_data_map = get_player_and_field_updated_dice_parameters(field.dice_number, player_dice_array[player_index], 1) #last param is 1 because earlier we set all fields at least to value 1
 	var updated_field_dice_number = updated_data_map[UPDATED_FIELD_DICE_NUMBER]
@@ -172,14 +187,14 @@ func is_empty(array: Array):
 		if element > 0:
 			return false
 	return true
-	
+
+#inclusive ranges
 func get_random_integer(low_range, upper_range):
 	var generator = RandomNumberGenerator.new()
 	generator.randomize()
 	return generator.randi_range(low_range, upper_range)
 
-func create_game_field() -> Array:
-	var scene = preload(HEXAGON_SCENE_PATH)
+func create_game_field(scene) -> Array:
 	var aggregated_offset = Vector2(0, 0)
 	var array_of_fields = []
 	
@@ -199,7 +214,7 @@ func create_game_field() -> Array:
 			
 			var instance = create_instance(scene)
 			array_of_fields[i][j] = instance
-			place_hexagon_tile(scene, instance, new_x, new_y)
+			place_hexagon_tile(instance, new_x, new_y)
 			set_instance_coordinates(instance, i, j)
 			aggregated_offset.x += OFFSET.x
 			
@@ -212,7 +227,7 @@ func is_first_line_offset(i):
 		return i % 2 == 1
 	return i % 2 == 0
 
-func place_hexagon_tile(scene, instance, x, y):
+func place_hexagon_tile(instance, x, y):
 	instance.position.x = x
 	instance.position.y = y
 	return instance
@@ -321,7 +336,7 @@ func is_end_of_game() -> bool:
 	return false	#current player wins the game
 		
 func _on_EndTurnButton_pressed():
-	distribute_additional_player_dices(field_array)
+	set_additional_player_dices()
 	
 	var opponent_index: int = get_opponent_index(Global.current_player_index)
 	Global.current_player_index = opponent_index
@@ -331,5 +346,5 @@ func _on_EndTurnButton_pressed():
 	manage_end_button_animation(turn_animation)
 
 func manage_end_button_animation(animation):
-	turn_animation.stop()
-	turn_animation.play("default")
+	animation.stop()
+	animation.play("default")
