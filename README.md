@@ -9,3 +9,6 @@
 Game based on [Dice wars](https://www.gamedesign.jp/games/dicewars/) developed in Godot engine
 
 ---
+
+### Dependencies:
+- For testing GUT is required: https://github.com/bitwes/Gut
