@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Roboto-Black.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://scripts/Battlefield.gd" type="Script" id=2]
@@ -19,72 +19,6 @@ font_data = ExtResource( 1 )
 [sub_resource type="DynamicFont" id=2]
 font_data = ExtResource( 1 )
 
-[sub_resource type="Animation" id=10]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ Vector2( 0.643252, 0.782391 ) ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath(".:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ Vector2( 127.264, 184.163 ) ]
-}
-
-[sub_resource type="Animation" id=9]
-resource_name = "default"
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = false
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ Vector2( 127.264, 193.813 ) ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath(".:rotation_degrees")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 0.0, 180.0 ]
-}
-tracks/2/type = "value"
-tracks/2/path = NodePath(".:scale")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = false
-tracks/2/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ Vector2( 0.643252, 0.747679 ) ]
-}
-
 [sub_resource type="DynamicFont" id=5]
 size = 102
 font_data = ExtResource( 1 )
@@ -93,87 +27,9 @@ font_data = ExtResource( 1 )
 size = 45
 font_data = ExtResource( 1 )
 
-[sub_resource type="Animation" id=7]
-resource_name = "turn_attacker"
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = false
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ Vector2( 88, 237 ) ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath(".:rotation_degrees")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0, 0.5, 1 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 0,
-"values": [ 0.0, 180.0, 360.0 ]
-}
-tracks/2/type = "value"
-tracks/2/path = NodePath(".:scale")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ Vector2( 0.138184, 0.142578 ), Vector2( 0.15, 0.148 ) ]
-}
-
 [sub_resource type="DynamicFont" id=6]
 size = 102
 font_data = ExtResource( 1 )
-
-[sub_resource type="Animation" id=8]
-resource_name = "turn_defender"
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = false
-tracks/0/keys = {
-"times": PoolRealArray( 1 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ Vector2( 89, 237 ) ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath(".:rotation_degrees")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0, 1 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 0.0, 360.0 ]
-}
-tracks/2/type = "value"
-tracks/2/path = NodePath(".:scale")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
-"times": PoolRealArray( 0, 0.5, 1 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 0,
-"values": [ Vector2( 0.291314, 0.271289 ), Vector2( 0.32, 0.282 ), Vector2( 0.291314, 0.271289 ) ]
-}
 
 [sub_resource type="DynamicFont" id=11]
 size = 58
@@ -247,7 +103,7 @@ margin_top = 550.011
 margin_right = 1910.0
 margin_bottom = 981.01
 rect_scale = Vector2( 0.428949, 0.392132 )
-rect_pivot_offset = Vector2( 146.064, 220.424 )
+rect_pivot_offset = Vector2( 127.264, 183.612 )
 custom_fonts/font = SubResource( 2 )
 flat = true
 
@@ -257,11 +113,6 @@ rotation = 3.14159
 scale = Vector2( 0.643252, 0.782391 )
 texture = ExtResource( 3 )
 offset = Vector2( 0, -4.08936 )
-
-[node name="TurnAnimation" type="AnimationPlayer" parent="EndTurnButton/Sprite"]
-unique_name_in_owner = true
-anims/RESET = SubResource( 10 )
-anims/default = SubResource( 9 )
 
 [node name="AttackerScoring" type="Label" parent="."]
 unique_name_in_owner = true
@@ -287,10 +138,6 @@ position = Vector2( 88, 237 )
 scale = Vector2( 0.138184, 0.142578 )
 texture = ExtResource( 7 )
 
-[node name="AttackerAnimation" type="AnimationPlayer" parent="AttackerScoring/AttackerSprite"]
-unique_name_in_owner = true
-anims/turn_attacker = SubResource( 7 )
-
 [node name="DefenderScoring" type="Label" parent="."]
 unique_name_in_owner = true
 margin_left = 1671.0
@@ -314,10 +161,6 @@ text = "Defender"
 position = Vector2( 89, 237 )
 scale = Vector2( 0.291314, 0.271289 )
 texture = ExtResource( 8 )
-
-[node name="DefenderAnimation" type="AnimationPlayer" parent="DefenderScoring/DefenderSprite"]
-unique_name_in_owner = true
-anims/turn_defender = SubResource( 8 )
 
 [node name="EndGameLabel" type="Label" parent="."]
 unique_name_in_owner = true

@@ -20,13 +20,13 @@ const PLAYER_DICE_COUNT_CAUTION_THRESHOLD: int = 8
 
 onready var start_label = $"%StartLabel" as Label
 onready var end_turn_button = $"%EndTurnButton" as Button
+onready var end_turn_button_sprite = $"EndTurnButton/Sprite" as Sprite
 onready var attacker_scoring_label = $"%AttackerScoring" as Label
 onready var defender_scoring_label = $"%DefenderScoring" as Label
 onready var attacker_label = $"%AttackerLabel" as Label
+onready var attacker_sprite = $AttackerScoring/AttackerSprite as Sprite
 onready var defender_label = $"%DefenderLabel" as Label
-onready var attacker_animation = $"%AttackerAnimation" as AnimationPlayer
-onready var defender_animation = $"%DefenderAnimation" as AnimationPlayer
-onready var turn_animation = $"%TurnAnimation" as AnimationPlayer
+onready var defender_sprite = $DefenderScoring/DefenderSprite as Sprite
 onready var end_game_label_winner_animation = $"%WinnerAnimation" as AnimationPlayer
 onready var end_game_label = $"%EndGameLabel" as Label
 onready var winner_label = $"%WinnerLabel" as Label
@@ -106,11 +106,11 @@ func is_field_blank(field):
 func get_opponent_index(random_player_index: int) -> int:
 	return 0 if random_player_index == 1 else 1
 
-func get_random_field(row_count, column_count, field_array) -> Object:
+func get_random_field(row_count, column_count, array_of_fields) -> Object:
 	var random_row = get_random_integer(0, row_count - 1) #inclusive ranges
 	var random_column = get_random_integer(0, column_count - 1)
 	
-	return field_array[random_row][random_column]
+	return array_of_fields[random_row][random_column]
 
 func set_dices_of_fields(array_of_field: Array, player_dices_to_set: Array):
 	set_all_fields_to_have_one_dice(array_of_field)
@@ -303,7 +303,8 @@ func calculate_winner(attacker, defender, attacker_player_index: int) -> void:
 	
 	# When the attacker wins
 	if (attacker_score > defender_score):
-		attacker_animation.play("turn_attacker")
+		manage_sprite_rotation_animation(attacker_sprite, Tween.TRANS_QUART, Tween.EASE_OUT_IN, 360)
+		
 		attach_defender_field_to_attacker(attacker, defender)
 		attacker.set_dice_number(1)    #move dices to defender's field
 
@@ -312,10 +313,11 @@ func calculate_winner(attacker, defender, attacker_player_index: int) -> void:
 
 		if(is_end_of_game()):
 			handle_game_end()
-	
-	# Else the defender wins
-	defender_animation.play("turn_defender")
-	attacker.set_dice_number(1)   #attacker lose dices except one
+
+	else:
+		# Else the defender wins
+		manage_sprite_rotation_animation(defender_sprite, Tween.TRANS_QUART, Tween. EASE_IN_OUT, 360)
+		attacker.set_dice_number(1)   #attacker lose dices except one
 
 func handle_game_end():
 	end_game_label.show()
@@ -367,8 +369,8 @@ func _on_EndTurnButton_pressed():
 	
 	start_label.set_text_and_color(opponent_index)
 	
-	manage_end_button_animation(turn_animation)
-
-func manage_end_button_animation(animation):
-	animation.stop()
-	animation.play("default")
+	manage_sprite_rotation_animation(end_turn_button_sprite, Tween.TRANS_BACK, Tween.EASE_IN_OUT, 180)
+	
+func manage_sprite_rotation_animation(animatable_object, trans_mode, ease_mode, rotation_degree):
+	var tween = create_tween().set_trans(trans_mode).set_ease(ease_mode)
+	tween.tween_property(animatable_object, "rotation", animatable_object.rotation + deg2rad(rotation_degree), 1.0)
