@@ -86,7 +86,7 @@ margin_top = 344.0
 margin_right = 768.0
 margin_bottom = 394.0
 custom_fonts/font = SubResource( 5 )
-text = "Random blank fields ?"
+text = "Blank field generation"
 
 [node name="CheckBox" type="CheckBox" parent="."]
 unique_name_in_owner = true
