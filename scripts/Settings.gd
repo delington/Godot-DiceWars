@@ -1,6 +1,6 @@
 extends Control
 
-const WELCOME_SCREEN_SCENE_PATH = "res://WelcomeScreen.tscn"
+const WELCOME_SCREEN_SCENE_PATH = "res://scenes/WelcomeScreen.tscn"
 
 onready var row_count_input = $"%RowInputText"
 onready var column_count_input = $"%ColumnInputText"

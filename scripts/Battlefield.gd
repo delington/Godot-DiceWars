@@ -1,7 +1,7 @@
 extends Node2D
 
-const HEXAGON_SCENE_PATH = "res://HexaSprite.tscn"
-const WELCOME_SCENE_PATH = "res://WelcomeScreen.tscn"
+const HEXAGON_SCENE_PATH = "res://scenes/HexaSprite.tscn"
+const WELCOME_SCENE_PATH = "res://scenes/WelcomeScreen.tscn"
 const ROW_OFFSET = 44
 const OFFSET = Vector2(88, 73)
 const START_HEXA_COORD = Vector2(50, 50)

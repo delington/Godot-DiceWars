@@ -33,12 +33,12 @@ _global_script_class_icons={
 [application]
 
 config/name="DiceWars"
-run/main_scene="res://Main.tscn"
+run/main_scene="res://scenes/Main.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
-Global="*res://Global.tscn"
+Global="*res://scenes/Global.tscn"
 
 [display]
 

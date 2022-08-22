@@ -1,6 +1,6 @@
 extends "res://addons/gut/test.gd"
 
-var Battlefield = load("res://Battlefield.tscn")
+var Battlefield = load("res://scenes/Battlefield.tscn")
 var _battlefield = null
 
 func before_each():

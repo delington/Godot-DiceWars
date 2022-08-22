@@ -92,9 +92,10 @@ text = "Random blank fields ?"
 unique_name_in_owner = true
 margin_left = 977.0
 margin_top = 351.0
-margin_right = 1499.0
-margin_bottom = 872.0
-rect_scale = Vector2( 0.0739952, 0.0713831 )
+margin_right = 1497.0
+margin_bottom = 925.0
+rect_scale = Vector2( 0.0739952, 0.072079 )
+rect_clip_content = true
 custom_icons/checked = ExtResource( 3 )
 custom_icons/unchecked = ExtResource( 4 )
 

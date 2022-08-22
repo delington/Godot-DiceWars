@@ -1,7 +1,7 @@
 extends Control
 
-const SETTINGS_SCENE_PATH: String = "res://Settings.tscn"
-const BATTLEFIELD_SCENE_PATH = "res://Battlefield.tscn"
+const SETTINGS_SCENE_PATH: String = "res://scenes/Settings.tscn"
+const BATTLEFIELD_SCENE_PATH = "res://scenes/Battlefield.tscn"
 
 signal change_to_battlefield_scene()
 
