@@ -37,20 +37,25 @@ var NUMBER_OF_FIELDS = COLUMN_COUNT * ROW_COUNT
 var ONE_PLAYER_ALL_FIELDS = NUMBER_OF_FIELDS / 2
 var NUMBER_OF_DICES = ONE_PLAYER_ALL_FIELDS * 3 # it would be 3 times but we set all fields to have at least 1 dice on it
 var player_dices_to_set = [NUMBER_OF_DICES, NUMBER_OF_DICES]
+var MAX_BLANK_FIELD_NUMBER = NUMBER_OF_FIELDS / 6
 
 var hexasprite_scene = preload(HEXAGON_SCENE_PATH)
 
 var attack_from = null
 var is_set_attack_from = false   # for player can only select 1 field to attack from
 var field_array: Array
+var has_blank_fields
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Global.ref["Battlefield"] = self
+	has_blank_fields = Global.settings.has_blank_fields
 
 	set_start_label()
 
 	field_array = create_game_field(hexasprite_scene)
+	set_blank_fields(field_array)
 	set_color_of_fields(field_array)
 	set_dices_of_fields(field_array, player_dices_to_set)
 
@@ -65,6 +70,16 @@ func set_start_label():
 	else:
 		print("ERROR: player index is out of bounds!")
 
+func set_blank_fields(array_of_field):
+	if (!has_blank_fields):
+		return
+		
+	var sum_of_blank_fields = get_random_integer(0, MAX_BLANK_FIELD_NUMBER)
+	
+	for i in range(0, sum_of_blank_fields): #upper exclusive
+		var random_field = get_random_field(ROW_COUNT, COLUMN_COUNT, array_of_field)
+		random_field.set_color(Global.blank_color)
+
 func set_color_of_fields(array_of_field):
 	# Dice counts to distribute by players
 	var field_number_array = [ONE_PLAYER_ALL_FIELDS, ONE_PLAYER_ALL_FIELDS]
@@ -72,28 +87,37 @@ func set_color_of_fields(array_of_field):
 	for i in range(0, ROW_COUNT):
 		for j in range(0, COLUMN_COUNT):
 			var random_player_index = get_random_integer(0,1)
-			if (field_number_array[random_player_index] > 0):
-				handle_attach_field_to_player(array_of_field[i][j], random_player_index, field_number_array)
-			else: 
-				var opponent_player_index: int = get_opponent_index(random_player_index)
-				handle_attach_field_to_player(array_of_field[i][j], opponent_player_index, field_number_array)
-				
+			
+			if (!is_field_blank(array_of_field[i][j])):
+				if (field_number_array[random_player_index] > 0):
+					handle_attach_field_to_player(array_of_field[i][j], random_player_index, field_number_array)
+				else: 
+					var opponent_player_index: int = get_opponent_index(random_player_index)
+					handle_attach_field_to_player(array_of_field[i][j], opponent_player_index, field_number_array)
+
 func handle_attach_field_to_player(field, player_index, field_number_array):
 	field.set_group(player_index)
 	field.set_color(Global.get_player_color_value_by_index(player_index))
 	field_number_array[player_index] -= 1
 
+func is_field_blank(field):
+	return field.color == Global.blank_color
+
 func get_opponent_index(random_player_index: int) -> int:
 	return 0 if random_player_index == 1 else 1
+
+func get_random_field(row_count, column_count, field_array) -> Object:
+	var random_row = get_random_integer(0, row_count - 1) #inclusive ranges
+	var random_column = get_random_integer(0, column_count - 1)
+	
+	return field_array[random_row][random_column]
 
 func set_dices_of_fields(array_of_field: Array, player_dices_to_set: Array):
 	set_all_fields_to_have_one_dice(array_of_field)
 	
 	while(!is_empty(player_dices_to_set)):
-		var random_row = get_random_integer(0, ROW_COUNT - 1) #inclusive ranges
-		var random_column = get_random_integer(0, COLUMN_COUNT - 1)
+		var field = get_random_field(ROW_COUNT, COLUMN_COUNT, array_of_field)
 		
-		var field = array_of_field[random_row][random_column]
 		if field.dice_number < MAX_FIELD_DICE_NUMBER:
 			field.select_chance += 1
 			

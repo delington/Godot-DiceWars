@@ -1,6 +1,7 @@
 extends Node2D
 
 const selection_color = Color.white
+const blank_color = Color.transparent
 const FIRST_PLAYER_INDEX = 0
 const SECOND_PLAYER_INDEX = 1
 const OPTION_BUTTON_PLAYER_KEY = "selected_player"
@@ -37,7 +38,8 @@ var player_colors_dict = [
 
 var settings = {
 	"row_count": 5,
-	"column_count": 5
+	"column_count": 5,
+	"has_blank_fields": false
 }
 
 var ref: Dictionary
